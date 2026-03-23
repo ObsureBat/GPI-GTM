@@ -29,6 +29,10 @@ export function seedData(db) {
     return;
   }
 
+  // Disable foreign keys during re-sync to avoid constraint errors 
+  // if some products need deletion before their children.
+  db.pragma('foreign_keys = OFF');
+
   const validHandles = new Set(catalogProducts.map((p) => p.handle));
   const orphanProducts = db
     .prepare('SELECT id, handle FROM products')
@@ -80,6 +84,8 @@ export function seedData(db) {
       }
     }
   }
+
+  db.pragma('foreign_keys = ON');
 }
 
 export function seedIfEmpty(db) {

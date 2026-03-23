@@ -89,6 +89,7 @@ export function loadCatalogFromCsv(csvPath) {
   const candidates = [
     csvPath,
     process.env.PRODUCTS_CSV,
+    path.join(__dirname, '../data/products_export_1.csv'),
     path.join(__dirname, '../../data/products_export_1.csv'),
     path.join(__dirname, '../../../products_export_1.csv'),
   ].filter(Boolean);

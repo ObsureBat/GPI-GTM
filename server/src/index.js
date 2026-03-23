@@ -17,26 +17,33 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = Number(process.env.PORT) || 4000;
 
-const db = openDb();
-ensureSchema(db);
-seedIfEmpty(db);
+let db;
+try {
+  db = openDb();
+  ensureSchema(db);
+  seedIfEmpty(db);
 
-function catalogMatchesDb() {
-  const catalog = getCatalogProducts();
-  if (!catalog.length) return true;
-  const rows = db.prepare('SELECT handle FROM products').all();
-  if (rows.length !== catalog.length) return false;
-  const dbHandles = new Set(rows.map((r) => r.handle));
-  return catalog.every((p) => dbHandles.has(p.handle));
+  function catalogMatchesDb() {
+    const catalog = getCatalogProducts();
+    if (!catalog.length) return true;
+    const rows = db.prepare('SELECT handle FROM products').all();
+    if (rows.length !== catalog.length) return false;
+    const dbHandles = new Set(rows.map((r) => r.handle));
+    return catalog.every((p) => dbHandles.has(p.handle));
+  }
+
+  if (!catalogMatchesDb()) {
+    console.log('[catalog] Syncing SQLite from Shopify CSV export…');
+    seedData(db);
+  }
+
+  const productCount = db.prepare('SELECT COUNT(*) AS c FROM products').get().c;
+  console.log(`[catalog] ${productCount} products in store`);
+} catch (err) {
+  console.error('[server] Initialization failed:', err);
+  // On Vercel, we might still want the server to start even if DB fails,
+  // though most routes will then fail. But it's better than a cold crash.
 }
-
-if (!catalogMatchesDb()) {
-  console.log('[catalog] Syncing SQLite from Shopify CSV export…');
-  seedData(db);
-}
-
-const productCount = db.prepare('SELECT COUNT(*) AS c FROM products').get().c;
-console.log(`[catalog] ${productCount} products in store`);
 
 app.use(
   cors({
@@ -47,7 +54,21 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-app.locals.db = db;
+if (db) app.locals.db = db;
+
+// Middleware to ensure DB is available for /api routes
+app.use('/api', (req, res, next) => {
+  if (!req.app.locals.db) {
+    return res.status(503).json({ error: 'Database not initialized', message: 'The server is currently unable to connect to the database.' });
+  }
+  next();
+});
+
+// Add a catch-all error handler for Express
+app.use((err, req, res, next) => {
+  console.error('[express] Error:', err);
+  res.status(500).json({ error: 'Internal Server Error', message: err.message });
+});
 
 app.use('/api', configRouter);
 app.use('/api/products', productsRouter);
@@ -57,11 +78,11 @@ app.use('/api/checkout', checkoutRouter);
 app.use('/api/search', searchRouter);
 
 app.get('/api/health', (req, res) => {
-  res.json({ ok: true });
+  res.json({ ok: true, environment: process.env.VERCEL ? 'vercel' : 'local' });
 });
 
 const clientDist = path.join(__dirname, '..', '..', 'client', 'dist');
-if (existsSync(clientDist)) {
+if (!process.env.VERCEL && existsSync(clientDist)) {
   app.use(express.static(clientDist));
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api')) return next();
@@ -71,6 +92,10 @@ if (existsSync(clientDist)) {
   });
 }
 
-app.listen(PORT, () => {
-  console.log(`API http://localhost:${PORT}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`API http://localhost:${PORT}`);
+  });
+}
+
+export default app;
