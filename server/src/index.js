@@ -70,6 +70,17 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal Server Error', message: err.message });
 });
 
+app.get('/api/health', (req, res) => {
+  res.json({ ok: true, environment: process.env.VERCEL ? 'vercel' : 'local' });
+});
+
+// Serve static files from root 'public' folder
+const clientDist = path.join(__dirname, '..', '..', 'public');
+if (existsSync(clientDist)) {
+  app.use(express.static(clientDist));
+}
+
+// Routes
 app.use('/api', configRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/collections', collectionsRouter);
@@ -77,20 +88,23 @@ app.use('/api/cart', cartRouter);
 app.use('/api/checkout', checkoutRouter);
 app.use('/api/search', searchRouter);
 
-app.get('/api/health', (req, res) => {
-  res.json({ ok: true, environment: process.env.VERCEL ? 'vercel' : 'local' });
+// Fallback for SPA: serve index.html for any unknown route
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) return next();
+  const indexPath = path.join(clientDist, 'index.html');
+  if (existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    // If we're on Vercel and index.html is missing in the function bundle, 
+    // it's likely because Vercel is serving it at the edge. 
+    // If it still falls through here, we provide a basic response.
+    if (req.path === '/') {
+      res.send('GPI E-commerce API is running. If you see this, the static frontend is missing from the server bundle.');
+    } else {
+      next();
+    }
+  }
 });
-
-const clientDist = path.join(__dirname, '..', '..', 'public');
-if (!process.env.VERCEL && existsSync(clientDist)) {
-  app.use(express.static(clientDist));
-  app.get('*', (req, res, next) => {
-    if (req.path.startsWith('/api')) return next();
-    res.sendFile(path.join(clientDist, 'index.html'), (err) => {
-      if (err) next();
-    });
-  });
-}
 
 if (!process.env.VERCEL) {
   app.listen(PORT, () => {

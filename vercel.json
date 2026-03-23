@@ -2,7 +2,8 @@
   "version": 2,
   "functions": {
     "server/src/index.js": {
-      "runtime": "vercel-node@latest"
+      "runtime": "vercel-node@latest",
+      "includeFiles": "public/**"
     }
   },
   "rewrites": [
@@ -12,7 +13,7 @@
     },
     {
       "source": "/(.*)",
-      "destination": "/$1"
+      "destination": "/index.html"
     }
   ]
 }
