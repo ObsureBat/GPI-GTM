@@ -5,7 +5,6 @@
   "scripts": {
     "dev": "node --watch src/index.js",
     "start": "node src/index.js",
-    "build": "node -e \"console.log('server: no build step')\"",
     "db:seed": "node src/seed.js"
   },
   "dependencies": {

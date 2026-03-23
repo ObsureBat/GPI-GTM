@@ -1,18 +1,10 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "server/src/index.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "public"
-      }
+  "functions": {
+    "server/src/index.js": {
+      "runtime": "vercel-node@latest"
     }
-  ],
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
