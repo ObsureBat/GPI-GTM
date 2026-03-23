@@ -13,7 +13,7 @@
     },
     {
       "source": "/(.*)",
-      "destination": "/server/src/index.js"
+      "destination": "/index.html"
     }
   ]
 }

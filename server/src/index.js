@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import path from 'path';
-import { existsSync } from 'fs';
+import { existsSync, readdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { openDb, ensureSchema } from './db.js';
 import { seedIfEmpty, seedData, getCatalogProducts } from './seed.js';
@@ -71,7 +71,13 @@ app.use((err, req, res, next) => {
 });
 
 app.get('/api/health', (req, res) => {
-  res.json({ ok: true, environment: process.env.VERCEL ? 'vercel' : 'local' });
+  res.json({ 
+    ok: true, 
+    environment: process.env.VERCEL ? 'vercel' : 'local',
+    dist_exists: existsSync(clientDist),
+    index_exists: existsSync(path.join(clientDist, 'index.html')),
+    dir_content: existsSync(clientDist) ? readdirSync(clientDist) : []
+  });
 });
 
 // Serve static files from root 'public' folder
