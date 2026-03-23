@@ -1,6 +1,6 @@
 {
   "framework": null,
-  "buildCommand": "node -e \"const {execSync}=require('child_process'); const fs=require('fs'); if(fs.existsSync('client/package.json')){execSync('npm install --prefix client',{stdio:'inherit'}); execSync('npm run build --prefix client',{stdio:'inherit'}); if(fs.existsSync('dist')) fs.rmSync('dist',{recursive:true,force:true}); fs.cpSync('client/dist','dist',{recursive:true});} else {execSync('npm install',{stdio:'inherit'}); execSync('npm run build',{stdio:'inherit'});}\"",
+  "buildCommand": "npm run vercel-build",
   "outputDirectory": "dist",
   "rewrites": [
     {
