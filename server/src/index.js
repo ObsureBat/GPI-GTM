@@ -84,7 +84,7 @@ app.use('/api/search', searchRouter);
 
 // Local static serving (only for non-Vercel runs)
 if (!process.env.VERCEL) {
-  const clientDist = path.join(__dirname, '..', '..', 'public');
+  const clientDist = path.join(__dirname, '..', '..', 'dist');
   if (existsSync(clientDist)) {
     app.use(express.static(clientDist));
     app.get('*', (req, res, next) => {
