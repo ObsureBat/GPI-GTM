@@ -81,7 +81,7 @@ app.get('/api/health', (req, res) => {
   res.json({ ok: true, environment: process.env.VERCEL ? 'vercel' : 'local' });
 });
 
-const clientDist = path.join(__dirname, '..', '..', 'client', 'dist');
+const clientDist = path.join(__dirname, '..', '..', 'public');
 if (!process.env.VERCEL && existsSync(clientDist)) {
   app.use(express.static(clientDist));
   app.get('*', (req, res, next) => {
