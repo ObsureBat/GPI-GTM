@@ -75,7 +75,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Serve static files from root 'public' folder
-const clientDist = path.join(__dirname, '..', '..', 'public');
+const clientDist = path.join(__dirname, 'public');
 if (existsSync(clientDist)) {
   app.use(express.static(clientDist));
 }
