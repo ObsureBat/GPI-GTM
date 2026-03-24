@@ -1,12 +1,20 @@
 {
   "name": "gpi-ecommerce",
   "private": true,
+  "type": "module",
   "scripts": {
-    "install:client": "cd client && npm install",
-    "dev": "cd client && npm run dev",
-    "build": "cd client && npm run build",
-    "preview": "cd client && npm run preview",
-    "vercel-build": "cd client && npm install && npm run build && cd .. && cp -r client/dist dist"
+    "dev": "vite --config client/vite.config.js",
+    "build": "vite build --config client/vite.config.js",
+    "preview": "vite preview --config client/vite.config.js"
   },
-  "devDependencies": {}
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
+    "three": "^0.183.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.3"
+  }
 }
