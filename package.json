@@ -6,7 +6,7 @@
     "dev": "cd client && npm run dev",
     "build": "cd client && npm run build",
     "preview": "cd client && npm run preview",
-    "vercel-build": "cd client && npm run build && cd .. && node -e \"const fs=require('fs'); if(fs.existsSync('dist')) fs.rmSync('dist',{recursive:true,force:true}); fs.cpSync('client/dist','dist',{recursive:true});\""
+    "vercel-build": "npm run install:client && cd client && npm run build && cd .. && node -e \"const fs=require('fs'); if(fs.existsSync('dist')) fs.rmSync('dist',{recursive:true,force:true}); fs.cpSync('client/dist','dist',{recursive:true});\""
   },
   "devDependencies": {}
 }
