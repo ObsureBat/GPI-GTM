@@ -1,55 +1,14 @@
 const base = '';
 
-// Read CSV data
-async function loadProductsFromCSV() {
+// Read JSON data
+async function loadProductsFromJSON() {
   try {
-    const response = await fetch('/data/products_export_1.csv');
-    const csvText = await response.text();
-    console.log('CSV response:', response);
-    console.log('CSV text length:', csvText.length);
-    
-    const lines = csvText.split('\n');
-    const headers = lines[0].split(',');
-    
-    const products = lines.slice(1).filter(line => line.trim()).map((line, index) => {
-      // Simple CSV parser that handles quoted fields
-      const values = [];
-      let current = '';
-      let inQuotes = false;
-      
-      for (let i = 0; i < line.length; i++) {
-        const char = line[i];
-        if (char === '"') {
-          inQuotes = !inQuotes;
-        } else if (char === ',' && !inQuotes) {
-          values.push(current.trim());
-          current = '';
-        } else {
-          current += char;
-        }
-      }
-      values.push(current.trim());
-      
-      const product = {
-        id: index + 1,
-        handle: values[0]?.replace(/"/g, '').trim() || '',
-        title: values[1]?.replace(/"/g, '').trim() || '',
-        vendor: values[3]?.replace(/"/g, '').trim() || '',
-        description: values[2]?.replace(/<[^>]*>/g, '')?.replace(/"/g, '').trim() || '',
-        price_cents: Math.round(parseFloat(values[25]?.replace(/"/g, '') || '0') * 100),
-        compare_at_cents: null,
-        image_url: values[33]?.replace(/"/g, '').trim() || '',
-        brand: values[3]?.replace(/"/g, '').trim().toLowerCase() || '',
-      };
-      
-      console.log(`Product ${index + 1}:`, product);
-      return product;
-    });
-    
-    console.log('Total products loaded:', products.length);
+    const response = await fetch('/data/products.json');
+    const products = await response.json();
+    console.log('Loaded products from JSON:', products.length);
     return products;
   } catch (error) {
-    console.error('Error loading CSV:', error);
+    console.error('Error loading JSON:', error);
     return [];
   }
 }
@@ -58,7 +17,7 @@ let cachedProducts = null;
 
 async function getProducts() {
   if (!cachedProducts) {
-    cachedProducts = await loadProductsFromCSV();
+    cachedProducts = await loadProductsFromJSON();
   }
   return cachedProducts;
 }
