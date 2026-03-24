@@ -5,10 +5,13 @@ async function loadProductsFromCSV() {
   try {
     const response = await fetch('/data/products_export_1.csv');
     const csvText = await response.text();
+    console.log('CSV response:', response);
+    console.log('CSV text length:', csvText.length);
+    
     const lines = csvText.split('\n');
     const headers = lines[0].split(',');
     
-    return lines.slice(1).filter(line => line.trim()).map((line, index) => {
+    const products = lines.slice(1).filter(line => line.trim()).map((line, index) => {
       // Simple CSV parser that handles quoted fields
       const values = [];
       let current = '';
@@ -27,7 +30,7 @@ async function loadProductsFromCSV() {
       }
       values.push(current.trim());
       
-      return {
+      const product = {
         id: index + 1,
         handle: values[0]?.replace(/"/g, '').trim() || '',
         title: values[1]?.replace(/"/g, '').trim() || '',
@@ -38,7 +41,13 @@ async function loadProductsFromCSV() {
         image_url: values[33]?.replace(/"/g, '').trim() || '',
         brand: values[3]?.replace(/"/g, '').trim().toLowerCase() || '',
       };
+      
+      console.log(`Product ${index + 1}:`, product);
+      return product;
     });
+    
+    console.log('Total products loaded:', products.length);
+    return products;
   } catch (error) {
     console.error('Error loading CSV:', error);
     return [];
