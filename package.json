@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --config client/vite.config.js",
-    "build": "vite build --config client/vite.config.js",
-    "preview": "vite preview --config client/vite.config.js"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "react": "^18.3.1",
