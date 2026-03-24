@@ -5,9 +5,9 @@
     "title": "GTM Himalayan Rock Salt 200g",
     "vendor": "GTM",
     "description": "Natural Himalayan Rock Salt from GTM.",
-    "price_cents": null,
+    "price_cents": 5000,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GTM Himalayan Rock Salt 200g.png",
     "brand": "gtm"
   },
   {
@@ -16,9 +16,9 @@
     "title": "GTM Himalayan Rock Salt 1Kg",
     "vendor": "GTM",
     "description": "Natural Himalayan Rock Salt from GTM.",
-    "price_cents": null,
+    "price_cents": 12000,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GTM Himalayan Rock Salt 1Kg.png",
     "brand": "gtm"
   },
   {
@@ -27,9 +27,9 @@
     "title": "GTM Himalayan Pink Salt 200g",
     "vendor": "GTM",
     "description": "Natural Himalayan Pink Salt from GTM.",
-    "price_cents": null,
+    "price_cents": 4500,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GTM Himalayan Pink Salt 200g.png",
     "brand": "gtm"
   },
   {
@@ -38,9 +38,9 @@
     "title": "GTM Himalayan Pink Salt 1Kg",
     "vendor": "GTM",
     "description": "Natural Himalayan Pink Salt from GTM.",
-    "price_cents": null,
+    "price_cents": 9000,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GTM Himalayan Pink Salt 1Kg.png",
     "brand": "gtm"
   },
   {
@@ -49,9 +49,9 @@
     "title": "GTM Crushed Pink Salt 1Kg",
     "vendor": "GTM",
     "description": "Premium Crushed Pink Salt from GTM.",
-    "price_cents": null,
+    "price_cents": 11000,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GTM Crushed Pink Salt 1Kg.png",
     "brand": "gtm"
   },
   {
@@ -60,9 +60,9 @@
     "title": "GTM Black Salt 500g",
     "vendor": "GTM",
     "description": "High quality Black Salt from GTM.",
-    "price_cents": null,
+    "price_cents": 7500,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GTM Black Salt 500g.png",
     "brand": "gtm"
   },
   {
@@ -71,9 +71,9 @@
     "title": "GTM Black Salt 500g(1)",
     "vendor": "GTM",
     "description": "High quality Black Salt from GTM.",
-    "price_cents": null,
+    "price_cents": 7500,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GTM Black Salt 500g(1).png",
     "brand": "gtm"
   },
   {
@@ -82,9 +82,9 @@
     "title": "GTM Black Salt 200g",
     "vendor": "GTM",
     "description": "High quality Black Salt from GTM.",
-    "price_cents": null,
+    "price_cents": 4000,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GTM Black Salt 200g.png",
     "brand": "gtm"
   },
   {
@@ -93,9 +93,9 @@
     "title": "GPI Turmeric Powder",
     "vendor": "GPI",
     "description": "Pure Turmeric Powder from GPI.",
-    "price_cents": null,
+    "price_cents": 5000,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Turmeric Powder.png",
     "brand": "gpi"
   },
   {
@@ -104,9 +104,9 @@
     "title": "GPI Super Detergent Powder",
     "vendor": "GPI",
     "description": "Advanced Super Detergent Powder from GPI.",
-    "price_cents": null,
+    "price_cents": 10000,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Super Detergent Powder.png",
     "brand": "gpi"
   },
   {
@@ -115,9 +115,9 @@
     "title": "GPI Soya Chaap Masala 100g",
     "vendor": "GPI",
     "description": "Special Soya Chaap Masala from GPI.",
-    "price_cents": null,
+    "price_cents": 7000,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Soya Chaap Masala 100g.png",
     "brand": "gpi"
   },
   {
@@ -126,9 +126,9 @@
     "title": "GPI Sambhar Masala 100g",
     "vendor": "GPI",
     "description": "Traditional Sambhar Masala from GPI.",
-    "price_cents": null,
+    "price_cents": 6500,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Sambhar Masala 100g.png",
     "brand": "gpi"
   },
   {
@@ -137,9 +137,9 @@
     "title": "GPI Red Chilli Powder",
     "vendor": "GPI",
     "description": "Pure Red Chilli Powder from GPI.",
-    "price_cents": null,
+    "price_cents": 7500,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Red Chilli Powder.png",
     "brand": "gpi"
   },
   {
@@ -148,9 +148,9 @@
     "title": "GPI Raita Masala 100g",
     "vendor": "GPI",
     "description": "Refreshing Raita Masala from GPI.",
-    "price_cents": null,
+    "price_cents": 6000,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Raita Masala 100g.png",
     "brand": "gpi"
   },
   {
@@ -159,9 +159,9 @@
     "title": "GPI Premium Detergent Powder",
     "vendor": "GPI",
     "description": "Quality Premium Detergent Powder from GPI.",
-    "price_cents": null,
+    "price_cents": 15000,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Premium Detergent Powder.png",
     "brand": "gpi"
   },
   {
@@ -170,9 +170,9 @@
     "title": "GPI Pav Bhaji 100g",
     "vendor": "GPI",
     "description": "Authentic Pav Bhaji Masala from GPI.",
-    "price_cents": null,
+    "price_cents": 6500,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Pav Bhaji 100g.png",
     "brand": "gpi"
   },
   {
@@ -181,9 +181,9 @@
     "title": "GPI Paneer Masala 100g",
     "vendor": "GPI",
     "description": "Flavorful Paneer Masala from GPI.",
-    "price_cents": null,
+    "price_cents": 6500,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Paneer Masala 100g.png",
     "brand": "gpi"
   },
   {
@@ -192,9 +192,9 @@
     "title": "GPI Kitchen King 100g",
     "vendor": "GPI",
     "description": "Versatile Kitchen King Masala from GPI.",
-    "price_cents": null,
+    "price_cents": 7000,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Ktchen King 100g.png",
     "brand": "gpi"
   },
   {
@@ -203,9 +203,9 @@
     "title": "GPI Himalayan Pink Salt",
     "vendor": "GPI",
     "description": "Natural Himalayan Pink Salt from GPI.",
-    "price_cents": null,
+    "price_cents": 6500,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Himalayan Pink Salt.png",
     "brand": "gpi"
   },
   {
@@ -214,9 +214,9 @@
     "title": "GPI Himalayan Pink Salt 1Kg",
     "vendor": "GPI",
     "description": "Natural Himalayan Pink Salt from GPI.",
-    "price_cents": null,
+    "price_cents": 9500,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Himalayan Pink Salt 1Kg.png",
     "brand": "gpi"
   },
   {
@@ -225,9 +225,9 @@
     "title": "GPI Gold Detergent Powder",
     "vendor": "GPI",
     "description": "Powerful Gold Detergent Powder from GPI.",
-    "price_cents": null,
+    "price_cents": 12000,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Gold Detergent Powder.png",
     "brand": "gpi"
   },
   {
@@ -236,9 +236,9 @@
     "title": "GPI Garam Masala 100g",
     "vendor": "GPI",
     "description": "Classic Garam Masala from GPI.",
-    "price_cents": null,
+    "price_cents": 8500,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Garam Masala 100g.png",
     "brand": "gpi"
   },
   {
@@ -247,9 +247,9 @@
     "title": "GPI Egg Curry 100g",
     "vendor": "GPI",
     "description": "Tasty Egg Curry Masala from GPI.",
-    "price_cents": null,
+    "price_cents": 6500,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Egg Curry 100g.png",
     "brand": "gpi"
   },
   {
@@ -258,9 +258,9 @@
     "title": "GPI Dal Makhani 100g",
     "vendor": "GPI",
     "description": "Rich Dal Makhani Masala from GPI.",
-    "price_cents": null,
+    "price_cents": 6500,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Dal Makhani 100g.png",
     "brand": "gpi"
   },
   {
@@ -269,9 +269,9 @@
     "title": "GPI Coriander Powder",
     "vendor": "GPI",
     "description": "Pure Coriander Powder from GPI.",
-    "price_cents": null,
+    "price_cents": 5500,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Coriander Powder.png",
     "brand": "gpi"
   },
   {
@@ -280,9 +280,9 @@
     "title": "GPI Chicken Masala 100g",
     "vendor": "GPI",
     "description": "Premium Chicken Masala from GPI.",
-    "price_cents": null,
+    "price_cents": 7500,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Chicken Masala 100g.png",
     "brand": "gpi"
   },
   {
@@ -291,9 +291,9 @@
     "title": "GPI Chana Masala 100g",
     "vendor": "GPI",
     "description": "Delicious Chana Masala from GPI.",
-    "price_cents": null,
+    "price_cents": 6500,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Chana Masala 100g.png",
     "brand": "gpi"
   },
   {
@@ -302,9 +302,9 @@
     "title": "GPI Chaat Masala 100g",
     "vendor": "GPI",
     "description": "Authentic Chaat Masala from GPI.",
-    "price_cents": null,
+    "price_cents": 6500,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Chaat Masala 100g.png",
     "brand": "gpi"
   },
   {
@@ -313,9 +313,9 @@
     "title": "GPI Black Salt 200g",
     "vendor": "GPI",
     "description": "High quality Black Salt from GPI.",
-    "price_cents": null,
+    "price_cents": 4500,
     "compare_at_cents": null,
-    "image_url": "1",
+    "image_url": "/products/GPI Black Salt 200g.png",
     "brand": "gpi"
   }
 ]
