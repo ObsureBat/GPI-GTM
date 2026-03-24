@@ -1,47 +1,43 @@
 const base = '';
 
-const MOCK_PRODUCTS = [
-  {
-    id: 1,
-    handle: 'gtm-himalayan-pink-salt-200g',
-    title: 'GTM Himalayan Pink Salt 200g',
-    brand: 'gtm',
-    description: 'Natural Himalayan pink salt for everyday cooking.',
-    price_cents: 9900,
-    compare_at_cents: 11900,
-    image_url: 'https://images.unsplash.com/photo-1518110925495-5fe2fda0442c?w=900&q=80',
-  },
-  {
-    id: 2,
-    handle: 'gtm-himalayan-rock-salt-200g',
-    title: 'GTM Himalayan Rock Salt 200g',
-    brand: 'gtm',
-    description: 'Pure rock salt with authentic taste and natural minerals.',
-    price_cents: 8900,
-    compare_at_cents: 10900,
-    image_url: 'https://images.unsplash.com/photo-1509356843151-3e7d96241e11?w=900&q=80',
-  },
-  {
-    id: 3,
-    handle: 'gpi-garam-masala-100g',
-    title: 'GPI Garam Masala 100g',
-    brand: 'gpi',
-    description: 'Aromatic spice blend for rich Indian flavor.',
-    price_cents: 12900,
-    compare_at_cents: 14900,
-    image_url: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=900&q=80',
-  },
-  {
-    id: 4,
-    handle: 'gpi-chaat-masala-100g',
-    title: 'GPI Chaat Masala 100g',
-    brand: 'gpi',
-    description: 'Tangy masala for chaats, fruits, and snacks.',
-    price_cents: 11900,
-    compare_at_cents: 13900,
-    image_url: 'https://images.unsplash.com/photo-1532336414038-cf19250c5757?w=900&q=80',
-  },
-];
+// Read CSV data
+async function loadProductsFromCSV() {
+  try {
+    const response = await fetch('/server/data/products_export_1.csv');
+    const csvText = await response.text();
+    const lines = csvText.split('\n');
+    const headers = lines[0].split(',');
+    
+    return lines.slice(1).filter(line => line.trim()).map((line, index) => {
+      const values = line.split(',');
+      return {
+        id: index + 1,
+        handle: values[0]?.trim() || '',
+        title: values[1]?.trim() || '',
+        vendor: values[3]?.trim() || '',
+        description: values[2]?.replace(/<[^>]*>/g, '')?.trim() || '',
+        price_cents: Math.round(parseFloat(values[25] || '0') * 100),
+        compare_at_cents: null,
+        image_url: values[33]?.trim() || '',
+        brand: values[3]?.trim().toLowerCase() || '',
+      };
+    });
+  } catch (error) {
+    console.error('Error loading CSV:', error);
+    return [];
+  }
+}
+
+let cachedProducts = null;
+
+async function getProducts() {
+  if (!cachedProducts) {
+    cachedProducts = await loadProductsFromCSV();
+  }
+  return cachedProducts;
+}
+
+const MOCK_PRODUCTS = [];
 
 function getLocalCartItems() {
   try {
@@ -80,34 +76,36 @@ function mockResponse(path, options = {}) {
 
   if (pathname === '/api/store-config') return { store_name: 'GPI / GTM', currency: 'INR' };
 
-  if (pathname === '/api/products') return MOCK_PRODUCTS;
+  if (pathname === '/api/products') return getProducts();
   if (pathname.startsWith('/api/products/')) {
     const handle = decodeURIComponent(pathname.replace('/api/products/', ''));
-    const row = MOCK_PRODUCTS.find((p) => p.handle === handle);
+    const products = getProducts();
+    const row = products.find((p) => p.handle === handle);
     if (!row) throw new Error('Product not found');
     return row;
   }
 
   if (pathname === '/api/collections') {
+    const products = getProducts();
     return [
-      { handle: 'all', title: 'All Products', description: 'All available products', products: MOCK_PRODUCTS },
+      { handle: 'all', title: 'All Products', description: 'All available products', products },
       {
         handle: 'himalayan-salt',
         title: 'Himalayan Salt',
         description: 'Premium Himalayan salt collection',
-        products: MOCK_PRODUCTS.filter((p) => p.handle.includes('salt')),
+        products: products.filter((p) => p.handle.includes('salt')),
       },
       {
         handle: 'pink-salt',
         title: 'Pink Salt',
         description: 'Pure pink salt products',
-        products: MOCK_PRODUCTS.filter((p) => p.handle.includes('pink-salt')),
+        products: products.filter((p) => p.handle.includes('pink-salt')),
       },
       {
         handle: 'black-salt',
         title: 'Black Salt',
         description: 'Authentic black and rock salt products',
-        products: MOCK_PRODUCTS.filter((p) => p.handle.includes('rock-salt')),
+        products: products.filter((p) => p.handle.includes('rock-salt')),
       },
     ];
   }
@@ -144,7 +142,8 @@ function mockResponse(path, options = {}) {
   if (pathname === '/api/search') {
     const q = (url.searchParams.get('q') || '').trim().toLowerCase();
     if (!q) return [];
-    return MOCK_PRODUCTS.filter((p) => (p.title + ' ' + p.description).toLowerCase().includes(q));
+    const products = getProducts();
+    return products.filter((p) => (p.title + ' ' + p.description).toLowerCase().includes(q));
   }
 
   if (pathname === '/api/checkout' && method === 'POST') {
