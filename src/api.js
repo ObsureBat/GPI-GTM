@@ -64,15 +64,15 @@ function mockResponse(path, options = {}) {
   if (pathname === '/api/products') return getProducts();
   if (pathname.startsWith('/api/products/')) {
     const handle = decodeURIComponent(pathname.replace('/api/products/', ''));
-    const products = getProducts();
-    const row = products.find((p) => p.handle === handle);
-    if (!row) throw new Error('Product not found');
-    return row;
+    return getProducts().then(products => {
+      const row = products.find((p) => p.handle === handle);
+      if (!row) throw new Error('Product not found');
+      return row;
+    });
   }
 
   if (pathname === '/api/collections') {
-    const products = getProducts();
-    return [
+    return getProducts().then(products => [
       { handle: 'all', title: 'All Products', description: 'All available products', products },
       {
         handle: 'himalayan-salt',
@@ -92,14 +92,15 @@ function mockResponse(path, options = {}) {
         description: 'Authentic black and rock salt products',
         products: products.filter((p) => p.handle.includes('rock-salt')),
       },
-    ];
+    ]);
   }
   if (pathname.startsWith('/api/collections/')) {
     const handle = decodeURIComponent(pathname.replace('/api/collections/', ''));
-    const all = mockResponse('/api/collections');
-    const row = all.find((c) => c.handle === handle);
-    if (!row) throw new Error('Collection not found');
-    return row;
+    return mockResponse('/api/collections').then(collections => {
+      const row = collections.find((c) => c.handle === handle);
+      if (!row) throw new Error('Collection not found');
+      return row;
+    });
   }
 
   if (pathname === '/api/cart' && method === 'GET') {
@@ -127,8 +128,9 @@ function mockResponse(path, options = {}) {
   if (pathname === '/api/search') {
     const q = (url.searchParams.get('q') || '').trim().toLowerCase();
     if (!q) return [];
-    const products = getProducts();
-    return products.filter((p) => (p.title + ' ' + p.description).toLowerCase().includes(q));
+    return getProducts().then(products => 
+      products.filter((p) => (p.title + ' ' + p.description).toLowerCase().includes(q))
+    );
   }
 
   if (pathname === '/api/checkout' && method === 'POST') {
