@@ -3,7 +3,6 @@
   "installCommand": "npm install",
   "buildCommand": "npm run vercel-build",
   "outputDirectory": "dist",
-  "rootDirectory": ".",
   "rewrites": [
     {
       "source": "/:path*",
