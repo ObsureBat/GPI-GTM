@@ -12,6 +12,12 @@ export function HimalayanSaltModel({ rotationDurationMs = 20000, onReady }){
   const [status, setStatus] = useState('initializing');
   const [loadProgress, setLoadProgress] = useState(0);
   const [activate3d, setActivate3d] = useState(false);
+  const onReadyRef = useRef(onReady);
+  
+  // Update ref when onReady changes
+  useEffect(() => {
+    onReadyRef.current = onReady;
+  }, [onReady]);
 
   useEffect(() => {
     const el = rootRef.current;
@@ -143,7 +149,7 @@ export function HimalayanSaltModel({ rotationDurationMs = 20000, onReady }){
         camera.lookAt(0, 0, 0);
 
         setStatus('ready');
-        onReady?.();
+        onReadyRef.current?.();
       },
       (xhr) => {
         if (xhr.lengthComputable) {
@@ -192,7 +198,7 @@ export function HimalayanSaltModel({ rotationDurationMs = 20000, onReady }){
       });
       if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
     };
-  }, [activate3d, rotationDurationMs, onReady]);
+  }, [activate3d, rotationDurationMs]);
 
   return (
     <div
