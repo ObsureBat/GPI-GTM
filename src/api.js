@@ -75,6 +75,18 @@ function mockResponse(path, options = {}) {
     return getProducts().then(products => [
       { handle: 'all', title: 'All Products', description: 'All available products', products },
       {
+        handle: 'gpi-products',
+        title: 'GPI Products',
+        description: 'Premium spices and detergents from GPI',
+        products: products.filter((p) => p.brand === 'gpi'),
+      },
+      {
+        handle: 'gtm-products',
+        title: 'GTM Products', 
+        description: 'Authentic Himalayan salts from GTM',
+        products: products.filter((p) => p.brand === 'gtm'),
+      },
+      {
         handle: 'himalayan-salt',
         title: 'Himalayan Salt',
         description: 'Premium Himalayan salt collection',
