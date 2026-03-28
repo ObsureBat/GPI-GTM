@@ -3241,6 +3241,13 @@ img {
     font-size: 1rem;
   }
   
+  .btn--banner {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+/* Split hero mobile */
 @media (max-width: 768px) {
   .brand-split__container {
     flex-direction: column;
