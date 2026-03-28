@@ -2898,12 +2898,24 @@ img {
     line-height: 1.6;
   }
   
+  .site {
+    display: block !important;
+    min-height: auto !important;
+  }
+  
+  .main {
+    display: block !important;
+    flex: none !important;
+  }
+  
   .page-width {
     padding: 0 var(--mobile-padding);
   }
   
   .section {
     padding: 3rem 0;
+    display: block !important;
+    visibility: visible !important;
   }
   
   .section__head {
@@ -2917,6 +2929,44 @@ img {
   
   .section__head p {
     font-size: 0.95rem;
+  }
+  
+  /* Ensure all sections are visible */
+  .hero,
+  .featured,
+  .brand-split,
+  .why,
+  .signature-salts,
+  .journey,
+  .banner-cta,
+  .footer {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  /* Fix specific component visibility */
+  .featured__carousel,
+  .featured__grid,
+  .brand-split__container,
+  .why__grid,
+  .signature-grid,
+  .journey__steps,
+  .salt-model-container {
+    display: block !important;
+    visibility: visible !important;
+  }
+  
+  /* Fix product cards */
+  .product-card {
+    display: block !important;
+    visibility: visible !important;
+  }
+  
+  /* Fix salt cards */
+  .salt-card {
+    display: flex !important;
+    visibility: visible !important;
   }
 }
 
