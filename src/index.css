@@ -2931,8 +2931,7 @@ img {
     font-size: 0.8rem;
   }
   
-  .header {
-    padding: 0.75rem var(--mobile-padding);
+  .site-header {
     position: sticky;
     top: 0;
     z-index: 100;
@@ -2940,67 +2939,90 @@ img {
     backdrop-filter: blur(10px);
   }
   
-  .header__content {
-    gap: 0.75rem;
+  .header__inner {
+    padding: 0.75rem var(--mobile-padding);
+    min-height: 60px;
   }
   
-  .header__logo {
+  .header__brandInner {
+    gap: 8px;
+  }
+  
+  .header__wordmark {
     font-size: 1.25rem;
   }
   
+  .header__brandBadge {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+  
   .header__nav {
-    display: none;
+    display: none; /* Hide desktop nav on mobile */
   }
   
   .header__search {
-    order: 3;
-    flex: 1;
-    max-width: 120px;
+    display: none; /* Hide search on mobile for cleaner look */
+  }
+  
+  .header__actions {
+    gap: 0.5rem;
   }
   
   .header__cart {
+    min-width: 44px;
+    min-height: 44px;
     padding: 0.5rem;
   }
   
   .header__menu {
-    display: flex;
+    display: flex; /* Show menu button on mobile */
+    min-width: 44px;
+    min-height: 44px;
     padding: 0.5rem;
   }
-}
-
-/* Navigation drawer mobile */
-@media (max-width: 880px) {
-  .nav-drawer {
-    position: fixed;
-    top: 0;
-    left: -100%;
-    width: 85%;
-    max-width: 320px;
-    height: 100vh;
-    background: white;
-    box-shadow: var(--shadow-lg);
-    transition: left 0.3s var(--ease);
-    z-index: 1000;
-    overflow-y: auto;
+  
+  .header__menuIcon {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: currentColor;
+    position: relative;
   }
   
-  .nav-drawer--open {
+  .header__menuIcon::before,
+  .header__menuIcon::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background: currentColor;
     left: 0;
   }
   
-  .nav-drawer__header {
-    padding: 1.5rem var(--mobile-padding);
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .header__menuIcon::before {
+    top: -6px;
   }
   
-  .nav-drawer__nav {
+  .header__menuIcon::after {
+    top: 6px;
+  }
+  
+  .nav-drawer {
+    width: 85%;
+    max-width: 320px;
+  }
+  
+  .nav-drawer__panel {
+    height: 100vh;
+    overflow-y: auto;
+  }
+  
+  .nav-drawer__links {
     padding: 1rem 0;
   }
   
-  .nav-drawer__nav a {
+  .nav-drawer__link {
     display: block;
     padding: 1rem var(--mobile-padding);
     text-decoration: none;
@@ -3009,18 +3031,20 @@ img {
     transition: background 0.2s var(--ease);
   }
   
-  .nav-drawer__nav a:hover,
-  .nav-drawer__nav a.active {
+  .nav-drawer__link:hover,
+  .nav-drawer__link.active {
     background: var(--surface);
     color: var(--gpi);
   }
   
-  .nav-drawer__close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 0.5rem;
+  .nav-drawer__backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
   }
 }
 
@@ -3029,15 +3053,15 @@ img {
   .hero {
     min-height: 70vh;
     padding: 2rem var(--mobile-padding);
+    text-align: center;
   }
   
   .hero__content {
-    text-align: center;
+    max-width: 100%;
   }
   
   .hero__title {
     font-size: 2.5rem;
-    line-height: 1.2;
     margin-bottom: 1.5rem;
   }
   
@@ -3052,11 +3076,10 @@ img {
     align-items: center;
   }
   
-  .btn {
+  .btn--primary,
+  .btn--secondary {
     width: 100%;
-    max-width: 280px;
-    padding: 1rem 1.5rem;
-    font-size: 1rem;
+    max-width: 300px;
   }
 }
 
@@ -3068,33 +3091,156 @@ img {
   
   .featured__grid {
     grid-template-columns: 1fr;
-    gap: var(--mobile-gap);
-  }
-  
-  .carousel__arrow {
-    display: none;
+    gap: 1.5rem;
   }
   
   .product-card {
-    padding: 1rem;
+    max-width: 400px;
+    margin: 0 auto;
   }
   
-  .product-card__image {
-    height: 200px;
+  .product-card__media {
+    aspect-ratio: 1;
   }
   
   .product-card__title {
-    font-size: 1rem;
-  margin-bottom: 0.5rem;
+    font-size: 1.1rem;
   }
   
   .product-card__price {
-    font-size: 1.125rem;
-    margin-bottom: 1rem;
+    font-size: 1rem;
   }
 }
 
 /* Split hero mobile */
+@media (max-width: 768px) {
+  .brand-split__container {
+    flex-direction: column;
+    padding: 2rem var(--mobile-padding);
+    gap: 2rem;
+  }
+  
+  .brand-split__panel {
+    min-height: 300px;
+    flex: 1;
+  }
+  
+  .brand-split__content {
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .brand-split__title {
+    font-size: 1.5rem;
+  }
+}
+
+/* Why features mobile */
+@media (max-width: 768px) {
+  .why__grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .why__feature {
+    text-align: center;
+    padding: 2rem;
+  }
+  
+  .why__icon {
+    margin: 0 auto 1.5rem;
+  }
+  
+  .why__title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .why__desc {
+    font-size: 0.95rem;
+  }
+}
+
+/* Signature salts mobile */
+@media (max-width: 768px) {
+  .signature-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .salt-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .salt-card__visual {
+    height: 200px;
+  }
+  
+  .salt-card__content {
+    padding: 1.5rem;
+  }
+  
+  .salt-card__title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .salt-card__desc {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Journey section mobile */
+@media (max-width: 768px) {
+  .journey {
+    padding: 3rem 0;
+  }
+  
+  .journey__steps {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .journey__step {
+    text-align: center;
+    padding-top: 2rem;
+  }
+  
+  .journey__step-number {
+    font-size: 2.5rem;
+  }
+  
+  .journey__step-title {
+    font-size: 1.25rem;
+  }
+  
+  .journey__step-desc {
+    font-size: 0.95rem;
+  }
+  
+  .salt-model-container {
+    height: 300px;
+    margin: 2rem var(--mobile-padding);
+  }
+}
+
+/* Banner CTA mobile */
+@media (max-width: 768px) {
+  .banner-cta__inner {
+    padding: 2rem var(--mobile-padding);
+    text-align: center;
+  }
+  
+  .banner-cta__title {
+    font-size: 1.75rem;
+  }
+  
+  .banner-cta__desc {
+    font-size: 1rem;
+  }
+  
 @media (max-width: 768px) {
   .brand-split__container {
     flex-direction: column;
