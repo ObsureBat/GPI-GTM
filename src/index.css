@@ -2932,14 +2932,12 @@ img {
   }
   
   /* Ensure all sections are visible */
-  .hero,
+  .split-hero,
   .featured,
-  .brand-split,
   .why,
   .signature-salts,
   .journey,
-  .banner-cta,
-  .footer {
+  .banner-cta {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
@@ -2948,9 +2946,9 @@ img {
   /* Fix specific component visibility */
   .featured__carousel,
   .featured__grid,
-  .brand-split__container,
   .why__grid,
   .signature-grid,
+  .journey-showcase,
   .journey__steps,
   .salt-model-container {
     display: block !important;
@@ -2966,6 +2964,14 @@ img {
   /* Fix salt cards */
   .salt-card {
     display: flex !important;
+    visibility: visible !important;
+  }
+  
+  /* Fix journey components */
+  .journey-showcase__visual,
+  .journey-showcase__content,
+  .journey-showcase__active-step {
+    display: block !important;
     visibility: visible !important;
   }
 }
@@ -3098,38 +3104,23 @@ img {
   }
 }
 
-/* Hero section mobile */
+/* Split Hero mobile */
 @media (max-width: 768px) {
-  .hero {
-    min-height: 70vh;
+  .split-hero {
+    min-height: 60vh;
     padding: 2rem var(--mobile-padding);
+  }
+  
+  .split-hero__content {
     text-align: center;
   }
   
-  .hero__content {
-    max-width: 100%;
+  .split-hero__title {
+    font-size: 2rem;
   }
   
-  .hero__title {
-    font-size: 2.5rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  .hero__subtitle {
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-  }
-  
-  .hero__actions {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: center;
-  }
-  
-  .btn--primary,
-  .btn--secondary {
-    width: 100%;
-    max-width: 300px;
+  .split-hero__subtitle {
+    font-size: 1rem;
   }
 }
 
@@ -3140,6 +3131,31 @@ img {
   }
   
   .featured__grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .product-card {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .product-card__media {
+    aspect-ratio: 1;
+  }
+  
+  .product-card__title {
+    font-size: 1.1rem;
+  }
+  
+  .product-card__price {
+    font-size: 1rem;
+  }
+}
+
+/* Why features mobile */
+@media (max-width: 768px) {
+  .why__grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
