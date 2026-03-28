@@ -267,6 +267,45 @@ img {
   z-index: 100;
 }
 
+/* Announcement Bar */
+.announcement-bar {
+  background: linear-gradient(135deg, var(--gpi), var(--gtm));
+  color: white;
+  text-align: center;
+  position: relative;
+  z-index: 101;
+}
+
+.announcement-bar__content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  min-height: 40px;
+  gap: 1rem;
+}
+
+.announcement-bar__message {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.announcement-bar__close {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: background 0.2s var(--ease);
+}
+
+.announcement-bar__close:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 .site-header {
   border-bottom: 1px solid rgba(15, 23, 42, 0.08);
   background:
@@ -2883,6 +2922,15 @@ img {
 
 /* Header mobile optimizations */
 @media (max-width: 768px) {
+  .announcement-bar__content {
+    padding: 0.5rem var(--mobile-padding);
+    font-size: 0.8rem;
+  }
+  
+  .announcement-bar__message {
+    font-size: 0.8rem;
+  }
+  
   .header {
     padding: 0.75rem var(--mobile-padding);
     position: sticky;
