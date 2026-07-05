@@ -1,10 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { api } from '../api.js';
-import { ProductCard } from '../components/ProductCard.jsx';
 import { SplitHero } from '../components/SplitHero.jsx';
 import { HimalayanSaltModel } from '../components/HimalayanSaltModel.jsx';
-import { useCart } from '../contexts/CartContext.jsx';
 
 const whyFeatures = [
   {
@@ -63,16 +60,9 @@ const journeySteps = [
 ];
 
 export function Home() {
-  const [products, setProducts] = useState([]);
-  const [featIndex, setFeatIndex] = useState(0);
-  const { addToCart } = useCart();
   const saltRotationMs = 20000;
   const [saltModelReady, setSaltModelReady] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
-
-  useEffect(() => {
-    api.getProducts().then(setProducts);
-  }, []);
 
   useEffect(() => {
     if (!saltModelReady) return undefined;
@@ -81,14 +71,6 @@ export function Home() {
     }, 5000);
     return () => clearInterval(interval);
   }, [saltModelReady]);
-
-  const featured = useMemo(
-    () => [...products].sort((a, b) => (a.sort_order ?? 9999) - (b.sort_order ?? 9999)),
-    [products]
-  );
-
-  const page = 4;
-  const slice = featured.slice(featIndex, featIndex + page);
 
   return (
     <>
@@ -147,53 +129,6 @@ export function Home() {
                 </Link>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section featured">
-        <div className="page-width">
-          <header className="section__head reveal">
-            <h2>Featured Products</h2>
-            <p>
-              Carefully selected premium salts, spices, and essentials crafted for purity and authentic taste.
-            </p>
-          </header>
-          <div className="featured__carousel reveal">
-            <button
-              type="button"
-              className="carousel__arrow"
-              aria-label="Previous"
-              disabled={featIndex <= 0}
-              onClick={() => setFeatIndex((i) => Math.max(0, i - page))}
-            >
-              ‹
-            </button>
-            <div key={featIndex} className="featured__grid">
-              {slice.map((p, idx) => (
-                <ProductCard
-                  key={p.id}
-                  product={p}
-                  onAdd={(id) => addToCart(id, 1)}
-                  className="reveal reveal--stagger"
-                  style={{ '--stagger': idx }}
-                />
-              ))}
-            </div>
-            <button
-              type="button"
-              className="carousel__arrow"
-              aria-label="Next"
-              disabled={featIndex + page >= featured.length}
-              onClick={() => setFeatIndex((i) => Math.min(featured.length - page, i + page))}
-            >
-              ›
-            </button>
-          </div>
-          <div className="section__actions reveal">
-            <Link to="/collections/all" className="btn btn--primary">
-              View All Products
-            </Link>
           </div>
         </div>
       </section>
