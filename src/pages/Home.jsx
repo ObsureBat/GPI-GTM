@@ -92,7 +92,22 @@ export function Home() {
 
   return (
     <>
-      <SplitHero />
+      <section className="home-top">
+        <div className="home-top__grid page-width">
+          <div className="home-top__col home-top__col--hero">
+            <SplitHero />
+          </div>
+          <div className={`home-top__col home-top__col--salt${saltModelReady ? ' home-top__col--salt-ready' : ''}`}>
+            <div className="home-top__salt-inner">
+              <span className="home-top__salt-label">Himalayan Pink Salt</span>
+              <div className="home-top__salt-model">
+                <HimalayanSaltModel rotationDurationMs={saltRotationMs} onReady={() => setSaltModelReady(true)} />
+              </div>
+              <p className="home-top__salt-caption">Rotate · Explore · Experience purity</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section className="section featured">
         <div className="page-width">
@@ -171,7 +186,6 @@ export function Home() {
           </header>
 
           <div className="signature-grid">
-            {/* Pink Salt Feature */}
             <article className="salt-card salt-card--pink reveal">
               <div className="salt-card__visual">
                 <img
@@ -203,7 +217,6 @@ export function Home() {
               </div>
             </article>
 
-            {/* Black Salt Feature */}
             <article className="salt-card salt-card--black reveal">
               <div className="salt-card__visual">
                 <img
@@ -237,6 +250,7 @@ export function Home() {
           </div>
         </div>
       </section>
+
       <section className="section journey">
         <div className="page-width">
           <span className="journey__badge reveal">Premium Quality</span>
@@ -245,13 +259,7 @@ export function Home() {
             Discover the authentic journey of pure Himalayan pink salt — from ancient mountains to your table.
           </p>
 
-          <div className={`journey-showcase${saltModelReady ? ' journey-showcase--active' : ''}`}>
-            <div className="journey-showcase__visual">
-              <div className="journey-showcase__model">
-                <HimalayanSaltModel rotationDurationMs={saltRotationMs} onReady={() => setSaltModelReady(true)} />
-              </div>
-            </div>
-
+          <div className="journey-showcase journey-showcase--content-only">
             <div className="journey-showcase__content reveal">
               <div className="journey-showcase__steps">
                 {journeySteps.map((s, idx) => (

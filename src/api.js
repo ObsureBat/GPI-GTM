@@ -137,7 +137,7 @@ async function mockResponse(path, options = {}) {
       announcement: { mainText: 'WELCOME TO THE STORE', subText: 'GPI INDUSTRIES PVT. LTD.' },
       contact: {
         phone: '+91 7078750755',
-        email: 'care@gpipvtltd.com',
+        email: 'viveekmd@gpipvtltd.com',
         location: 'Delhi Saharanpur Road, Baraut, Distt. Baghpat, Uttar Pradesh - 250611',
       },
       social: {

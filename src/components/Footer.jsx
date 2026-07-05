@@ -5,7 +5,7 @@ const MAP_EMBED_SRC =
 
 export function Footer({ config }) {
   const { contact, social, brandName, brandDescription } = config;
-  const email = contact?.email || 'care@gpipvtltd.com';
+  const email = contact?.email || 'viveekmd@gpipvtltd.com';
 
   return (
     <footer className="footer footer--flux">

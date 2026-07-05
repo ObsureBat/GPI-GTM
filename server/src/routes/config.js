@@ -13,7 +13,7 @@ configRouter.get('/store-config', (req, res) => {
     },
     contact: {
       phone: '+91 7078750755',
-      email: 'care@gpipvtltd.com',
+      email: 'viveekmd@gpipvtltd.com',
       location: 'Delhi Saharanpur Road, Baraut, Distt. Baghpat, Uttar Pradesh - 250611',
     },
     social: {
