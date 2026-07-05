@@ -24,7 +24,8 @@ CREATE TABLE products (
   compare_at_cents INTEGER,
   image_url TEXT,
   brand TEXT NOT NULL CHECK (brand IN ('gtm', 'gpi')),
-  available INTEGER NOT NULL DEFAULT 1
+  available INTEGER NOT NULL DEFAULT 1,
+  sort_order INTEGER NOT NULL DEFAULT 9999
 );
 
 CREATE TABLE product_collections (

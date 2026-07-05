@@ -88,7 +88,7 @@ export function SplitHero() {
       aria-label="GTM and GPI brand showcase"
     >
       <div className="brand-split__container">
-        <Link className="brand-split__panel brand-split__panel--left" to="/collections/gtm-products">
+        <Link className="brand-split__panel brand-split__panel--left" to="/collections/salt-products">
           {GTM_BACKGROUND_IMAGE ? (
             <img className="brand-split__bg" src={GTM_BACKGROUND_IMAGE} alt="" loading="eager" decoding="async" />
           ) : (
@@ -106,12 +106,12 @@ export function SplitHero() {
               authentic taste.
             </p>
             <span className="brand-split__cta brand-split__cta--gtm">
-              <span className="brand-split__cta-inner">Shop GTM products</span>
+              <span className="brand-split__cta-inner">Browse salt products</span>
             </span>
           </div>
         </Link>
 
-        <Link className="brand-split__panel brand-split__panel--right" to="/collections/gpi-products">
+        <Link className="brand-split__panel brand-split__panel--right" to="/collections/spices-products">
           {GPI_BACKGROUND_IMAGE ? (
             <img className="brand-split__bg" src={GPI_BACKGROUND_IMAGE} alt="" loading="eager" decoding="async" />
           ) : (
@@ -129,7 +129,7 @@ export function SplitHero() {
               everyday kitchens.
             </p>
             <span className="brand-split__cta brand-split__cta--gpi">
-              <span className="brand-split__cta-inner">Shop GPI products</span>
+              <span className="brand-split__cta-inner">Browse spices &amp; cleaning</span>
             </span>
           </div>
         </Link>

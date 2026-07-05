@@ -19,25 +19,37 @@ export function stripHtml(html) {
  */
 export function collectionsForProduct(row) {
   const handle = (row.Handle || '').toLowerCase();
-  const vendor = (row.Vendor || '').toLowerCase();
+  const title = (row.Title || '').toLowerCase();
   const tags = (row.Tags || '').toLowerCase();
 
   const out = new Set(['all']);
 
-  if (vendor === 'gtm') out.add('gtm-products');
-  if (vendor === 'gpi') out.add('gpi-products');
-
-  const isSalt = tags.includes('salt') || (handle.includes('salt') && !handle.includes('masala'));
-  const isPink =
-    (handle.includes('pink') && handle.includes('salt')) ||
-    handle.includes('crushed-pink') ||
-    handle.includes('crushed-pink-salt');
-  const isBlack = handle.includes('black') && handle.includes('salt');
+  const isSalt =
+    tags.includes('salt') ||
+    handle.includes('puiro') ||
+    handle.includes('iodine') ||
+    (handle.includes('salt') && !handle.includes('masala'));
+  const isSpice = tags.includes('masala') || tags.includes('spices');
+  const isDetergent = tags.includes('detergent') || handle.includes('detergent');
 
   if (isSalt) {
-    out.add('himalayan-salt');
-    if (isPink) out.add('pink-salt');
-    if (isBlack) out.add('black-salt');
+    out.add('salt-products');
+    if (title.includes('1kg') || title.includes('1 kg') || handle.includes('1kg')) out.add('salt-1kg');
+    if (title.includes('200') || handle.includes('200')) out.add('salt-200gm');
+    if ((title.includes('100') || handle.includes('100')) && handle.includes('salt')) out.add('salt-100gm');
+    if (title.includes('500') || handle.includes('500')) out.add('salt-500gm');
+  }
+
+  if (isSpice) {
+    out.add('spices-products');
+    if (title.includes('100') || handle.includes('100')) out.add('spices-100gm');
+    if (title.includes('50') || handle.includes('50')) out.add('spices-50gm');
+  }
+
+  if (isDetergent) {
+    out.add('cleaning-products');
+    if (title.includes('500') || handle.includes('500')) out.add('cleaning-500gm');
+    else out.add('cleaning-1kg');
   }
 
   return [...out];
@@ -65,6 +77,7 @@ function rowToProduct(row) {
 
   const imageUrl = (row['Image Src'] || '').trim();
   const body = stripHtml(row['Body (HTML)'] || row.Title || '');
+  const sortOrder = parseInt(String(row['Sort Order'] || '9999'), 10);
 
   return {
     handle: (row.Handle || '').trim(),
@@ -77,6 +90,7 @@ function rowToProduct(row) {
         : null,
     brand,
     image_url: imageUrl || null,
+    sort_order: Number.isNaN(sortOrder) ? 9999 : sortOrder,
     collections: collectionsForProduct(row),
   };
 }

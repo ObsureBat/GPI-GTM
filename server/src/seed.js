@@ -9,11 +9,19 @@ const __filename = fileURLToPath(import.meta.url);
 
 export const collections = [
   { handle: 'all', title: 'All Products', description: 'Browse every GPI and GTM product.' },
+  { handle: 'salt-products', title: 'Salt Products', description: 'Himalayan, pink, black, and specialty salts.' },
+  { handle: 'salt-1kg', title: 'Salt — 1kg', description: '1kg salt packs.' },
+  { handle: 'salt-200gm', title: 'Salt — 200gm', description: '200gm salt packs.' },
+  { handle: 'salt-100gm', title: 'Salt — 100gm', description: '100gm salt packs.' },
+  { handle: 'salt-500gm', title: 'Salt — 500gm', description: '500gm salt packs.' },
+  { handle: 'spices-products', title: 'Spices Products', description: 'Authentic Indian masalas and spices.' },
+  { handle: 'spices-100gm', title: 'Spices — 100gm', description: '100gm spice and masala packs.' },
+  { handle: 'spices-50gm', title: 'Spices — 50gm', description: '50gm spice and masala packs.' },
+  { handle: 'cleaning-products', title: 'Cleaning Products', description: 'GPI detergent powders for home care.' },
+  { handle: 'cleaning-1kg', title: 'Cleaning — 1kg', description: '1kg detergent packs.' },
+  { handle: 'cleaning-500gm', title: 'Cleaning — 500gm', description: '500gm detergent packs.' },
   { handle: 'gtm-products', title: 'GTM Products', description: 'Premium Himalayan salts and natural minerals.' },
   { handle: 'gpi-products', title: 'GPI Products', description: 'Authentic spices, masalas, and household essentials.' },
-  { handle: 'pink-salt', title: 'Pink Salt', description: 'Himalayan pink salt collection.' },
-  { handle: 'black-salt', title: 'Black Salt', description: 'Kala Namak and specialty salts.' },
-  { handle: 'himalayan-salt', title: 'Himalayan Salt', description: 'Pink, rock, and mineral-rich salts.' },
 ];
 
 export function getCatalogProducts() {
@@ -52,15 +60,16 @@ export function seedData(db) {
     db.prepare('SELECT id FROM collections WHERE handle = ?').get(handle).id;
 
   const upsertProduct = db.prepare(`
-    INSERT INTO products (handle, title, description, price_cents, compare_at_cents, image_url, brand, available)
-    VALUES (@handle, @title, @description, @price_cents, @compare_at_cents, @image_url, @brand, 1)
+    INSERT INTO products (handle, title, description, price_cents, compare_at_cents, image_url, brand, available, sort_order)
+    VALUES (@handle, @title, @description, @price_cents, @compare_at_cents, @image_url, @brand, 1, @sort_order)
     ON CONFLICT(handle) DO UPDATE SET
       title = excluded.title,
       description = excluded.description,
       price_cents = excluded.price_cents,
       compare_at_cents = excluded.compare_at_cents,
       image_url = excluded.image_url,
-      brand = excluded.brand
+      brand = excluded.brand,
+      sort_order = excluded.sort_order
   `);
 
   const link = db.prepare(
@@ -74,6 +83,7 @@ export function seedData(db) {
     upsertProduct.run({
       ...row,
       compare_at_cents: row.compare_at_cents ?? null,
+      sort_order: row.sort_order ?? 9999,
     });
     const pid = db.prepare('SELECT id FROM products WHERE handle = ?').get(p.handle).id;
     for (const h of colHandles) {

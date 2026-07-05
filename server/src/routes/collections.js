@@ -18,7 +18,7 @@ collectionsRouter.get('/:handle', (req, res) => {
        FROM products p
        INNER JOIN product_collections pc ON pc.product_id = p.id
        WHERE pc.collection_id = ? AND p.available = 1
-       ORDER BY p.title`
+       ORDER BY p.sort_order ASC, p.title`
     )
     .all(col.id);
   res.json({ ...col, products });

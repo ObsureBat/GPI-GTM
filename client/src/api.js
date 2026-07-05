@@ -1,47 +1,23 @@
 const base = '';
 
-const MOCK_PRODUCTS = [
-  {
-    id: 1,
-    handle: 'gtm-himalayan-pink-salt-200g',
-    title: 'GTM Himalayan Pink Salt 200g',
-    brand: 'gtm',
-    description: 'Natural Himalayan pink salt for everyday cooking.',
-    price_cents: 9900,
-    compare_at_cents: 11900,
-    image_url: 'https://images.unsplash.com/photo-1518110925495-5fe2fda0442c?w=900&q=80',
-  },
-  {
-    id: 2,
-    handle: 'gtm-himalayan-rock-salt-200g',
-    title: 'GTM Himalayan Rock Salt 200g',
-    brand: 'gtm',
-    description: 'Pure rock salt with authentic taste and natural minerals.',
-    price_cents: 8900,
-    compare_at_cents: 10900,
-    image_url: 'https://images.unsplash.com/photo-1509356843151-3e7d96241e11?w=900&q=80',
-  },
-  {
-    id: 3,
-    handle: 'gpi-garam-masala-100g',
-    title: 'GPI Garam Masala 100g',
-    brand: 'gpi',
-    description: 'Aromatic spice blend for rich Indian flavor.',
-    price_cents: 12900,
-    compare_at_cents: 14900,
-    image_url: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=900&q=80',
-  },
-  {
-    id: 4,
-    handle: 'gpi-chaat-masala-100g',
-    title: 'GPI Chaat Masala 100g',
-    brand: 'gpi',
-    description: 'Tangy masala for chaats, fruits, and snacks.',
-    price_cents: 11900,
-    compare_at_cents: 13900,
-    image_url: 'https://images.unsplash.com/photo-1532336414038-cf19250c5757?w=900&q=80',
-  },
-];
+async function loadProductsFromJSON() {
+  try {
+    const response = await fetch('/data/products.json');
+    const products = await response.json();
+    return products.sort((a, b) => (a.sort_order ?? 9999) - (b.sort_order ?? 9999));
+  } catch {
+    return [];
+  }
+}
+
+let cachedProducts = null;
+
+async function getProducts() {
+  if (!cachedProducts) {
+    cachedProducts = await loadProductsFromJSON();
+  }
+  return cachedProducts;
+}
 
 function getLocalCartItems() {
   try {
@@ -59,10 +35,11 @@ function setLocalCartItems(items) {
   }
 }
 
-function toCart(items) {
+async function toCart(items) {
+  const products = await getProducts();
   const enriched = items
     .map((i) => {
-      const p = MOCK_PRODUCTS.find((x) => x.id === i.product_id);
+      const p = products.find((x) => x.id === i.product_id);
       if (!p) return null;
       return { ...i, product: p, line_total_cents: p.price_cents * i.quantity };
     })
@@ -73,50 +50,127 @@ function toCart(items) {
   return { items: enriched, subtotal_cents: subtotal, item_count: count };
 }
 
-function mockResponse(path, options = {}) {
+function matchesWeight(handle, title, pattern) {
+  const text = `${handle} ${title}`.toLowerCase();
+  if (pattern === '1kg') return text.includes('1kg') || text.includes('1 kg');
+  if (pattern === '200gm') return text.includes('200');
+  if (pattern === '100gm') return text.includes('100') && text.includes('salt');
+  if (pattern === '500gm') return text.includes('500');
+  if (pattern === '50gm') return text.includes('50');
+  return false;
+}
+
+function isSaltProduct(p) {
+  const text = `${p.handle} ${p.title}`.toLowerCase();
+  return (
+    (text.includes('salt') || text.includes('puiro') || text.includes('iodine')) &&
+    !text.includes('masala')
+  );
+}
+
+function isSpiceProduct(p) {
+  return p.handle.includes('masala');
+}
+
+function isCleaningProduct(p) {
+  return p.handle.includes('detergent');
+}
+
+function filterProducts(products, handle) {
+  const sorted = [...products].sort((a, b) => (a.sort_order ?? 9999) - (b.sort_order ?? 9999));
+  if (handle === 'all') return sorted;
+  if (handle === 'salt-products') return sorted.filter(isSaltProduct);
+  if (handle === 'spices-products') return sorted.filter(isSpiceProduct);
+  if (handle === 'cleaning-products') return sorted.filter(isCleaningProduct);
+  if (handle === 'salt-1kg') {
+    return sorted.filter((p) => isSaltProduct(p) && matchesWeight(p.handle, p.title, '1kg'));
+  }
+  if (handle === 'salt-200gm') {
+    return sorted.filter((p) => isSaltProduct(p) && matchesWeight(p.handle, p.title, '200gm'));
+  }
+  if (handle === 'salt-100gm') {
+    return sorted.filter((p) => isSaltProduct(p) && matchesWeight(p.handle, p.title, '100gm'));
+  }
+  if (handle === 'salt-500gm') {
+    return sorted.filter((p) => isSaltProduct(p) && matchesWeight(p.handle, p.title, '500gm'));
+  }
+  if (handle === 'spices-100gm') {
+    return sorted.filter((p) => p.handle.includes('masala') && matchesWeight(p.handle, p.title, '100gm'));
+  }
+  if (handle === 'spices-50gm') {
+    return sorted.filter((p) => p.handle.includes('masala') && matchesWeight(p.handle, p.title, '50gm'));
+  }
+  if (handle === 'cleaning-1kg') {
+    return sorted.filter((p) => p.handle.includes('detergent') && matchesWeight(p.handle, p.title, '1kg'));
+  }
+  if (handle === 'cleaning-500gm') {
+    return sorted.filter((p) => p.handle.includes('detergent') && matchesWeight(p.handle, p.title, '500gm'));
+  }
+  return [];
+}
+
+const COLLECTION_DEFS = [
+  { handle: 'all', title: 'All Products', description: 'Browse every GPI and GTM product.' },
+  { handle: 'salt-products', title: 'Salt Products', description: 'Himalayan, pink, black, and specialty salts.' },
+  { handle: 'salt-1kg', title: 'Salt — 1kg', description: '1kg salt packs.' },
+  { handle: 'salt-200gm', title: 'Salt — 200gm', description: '200gm salt packs.' },
+  { handle: 'salt-100gm', title: 'Salt — 100gm', description: '100gm salt packs.' },
+  { handle: 'salt-500gm', title: 'Salt — 500gm', description: '500gm salt packs.' },
+  { handle: 'spices-products', title: 'Spices Products', description: 'Authentic Indian masalas and spices.' },
+  { handle: 'spices-100gm', title: 'Spices — 100gm', description: '100gm spice and masala packs.' },
+  { handle: 'spices-50gm', title: 'Spices — 50gm', description: '50gm spice and masala packs.' },
+  { handle: 'cleaning-products', title: 'Cleaning Products', description: 'GPI detergent powders for home care.' },
+  { handle: 'cleaning-1kg', title: 'Cleaning — 1kg', description: '1kg detergent packs.' },
+  { handle: 'cleaning-500gm', title: 'Cleaning — 500gm', description: '500gm detergent packs.' },
+];
+
+async function mockResponse(path, options = {}) {
   const url = new URL(path, 'https://local.mock');
   const pathname = url.pathname;
   const method = (options.method || 'GET').toUpperCase();
 
-  if (pathname === '/api/store-config') return { store_name: 'GPI / GTM', currency: 'INR' };
+  if (pathname === '/api/store-config') {
+    return {
+      brandName: 'GPI Industries Pvt. Ltd.',
+      brandDescription:
+        'GPI Industries Pvt. Ltd. delivers high-quality Himalayan salts, authentic Indian spices, and household essentials.',
+      announcement: { mainText: 'WELCOME TO THE STORE', subText: 'GPI INDUSTRIES PVT. LTD.' },
+      contact: {
+        phone: '+91 7078750755',
+        email: 'care@gpipvtltd.com',
+        location: 'Delhi Saharanpur Road, Baraut, Distt. Baghpat, Uttar Pradesh - 250611',
+      },
+      social: {
+        facebook: 'https://facebook.com/gpiindustries',
+        instagram: 'https://instagram.com/gpiindustries',
+        youtube: 'https://youtube.com/@gpiindustries',
+      },
+      currency: 'INR',
+      currencySymbol: '₹',
+    };
+  }
 
-  if (pathname === '/api/products') return MOCK_PRODUCTS;
+  const products = await getProducts();
+
+  if (pathname === '/api/products') return products;
   if (pathname.startsWith('/api/products/')) {
     const handle = decodeURIComponent(pathname.replace('/api/products/', ''));
-    const row = MOCK_PRODUCTS.find((p) => p.handle === handle);
+    const row = products.find((p) => p.handle === handle);
     if (!row) throw new Error('Product not found');
     return row;
   }
 
   if (pathname === '/api/collections') {
-    return [
-      { handle: 'all', title: 'All Products', description: 'All available products', products: MOCK_PRODUCTS },
-      {
-        handle: 'himalayan-salt',
-        title: 'Himalayan Salt',
-        description: 'Premium Himalayan salt collection',
-        products: MOCK_PRODUCTS.filter((p) => p.handle.includes('salt')),
-      },
-      {
-        handle: 'pink-salt',
-        title: 'Pink Salt',
-        description: 'Pure pink salt products',
-        products: MOCK_PRODUCTS.filter((p) => p.handle.includes('pink-salt')),
-      },
-      {
-        handle: 'black-salt',
-        title: 'Black Salt',
-        description: 'Authentic black and rock salt products',
-        products: MOCK_PRODUCTS.filter((p) => p.handle.includes('rock-salt')),
-      },
-    ];
+    return COLLECTION_DEFS.map((c) => ({
+      ...c,
+      products: filterProducts(products, c.handle),
+    }));
   }
   if (pathname.startsWith('/api/collections/')) {
     const handle = decodeURIComponent(pathname.replace('/api/collections/', ''));
-    const all = mockResponse('/api/collections');
-    const row = all.find((c) => c.handle === handle);
-    if (!row) throw new Error('Collection not found');
-    return row;
+    const def = COLLECTION_DEFS.find((c) => c.handle === handle);
+    if (!def) throw new Error('Collection not found');
+    return { ...def, products: filterProducts(products, handle) };
   }
 
   if (pathname === '/api/cart' && method === 'GET') {
@@ -136,7 +190,10 @@ function mockResponse(path, options = {}) {
     const productId = Number(body.product_id);
     const quantity = Math.max(0, Number(body.quantity || 0));
     let items = getLocalCartItems();
-    items = quantity > 0 ? items.map((i) => (i.product_id === productId ? { ...i, quantity } : i)) : items.filter((i) => i.product_id !== productId);
+    items =
+      quantity > 0
+        ? items.map((i) => (i.product_id === productId ? { ...i, quantity } : i))
+        : items.filter((i) => i.product_id !== productId);
     setLocalCartItems(items);
     return toCart(items);
   }
@@ -144,7 +201,7 @@ function mockResponse(path, options = {}) {
   if (pathname === '/api/search') {
     const q = (url.searchParams.get('q') || '').trim().toLowerCase();
     if (!q) return [];
-    return MOCK_PRODUCTS.filter((p) => (p.title + ' ' + p.description).toLowerCase().includes(q));
+    return products.filter((p) => (p.title + ' ' + p.description).toLowerCase().includes(q));
   }
 
   if (pathname === '/api/checkout' && method === 'POST') {

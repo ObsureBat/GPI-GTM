@@ -13,8 +13,8 @@ configRouter.get('/store-config', (req, res) => {
     },
     contact: {
       phone: '+91 7078750755',
-      email: 'info@gpiindustries.com',
-      location: 'India',
+      email: 'care@gpipvtltd.com',
+      location: 'Delhi Saharanpur Road, Baraut, Distt. Baghpat, Uttar Pradesh - 250611',
     },
     social: {
       facebook: 'https://facebook.com/gpiindustries',

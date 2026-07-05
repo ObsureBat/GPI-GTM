@@ -3,11 +3,36 @@ import { Link, NavLink } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext.jsx';
 import { api } from '../api.js';
 
-const nav = [
-  { to: '/', label: 'Home', end: true },
-  { to: '/collections/gpi-products', label: 'Shop GPI' },
-  { to: '/collections/gtm-products', label: 'Shop GTM' },
-  { to: '/collections/all', label: 'All products' },
+const productNav = [
+  {
+    label: 'All products',
+    to: '/collections/all',
+  },
+  {
+    label: 'Salt products',
+    to: '/collections/salt-products',
+    children: [
+      { label: '1kg', to: '/collections/salt-1kg' },
+      { label: '200gm', to: '/collections/salt-200gm' },
+      { label: '100gm', to: '/collections/salt-100gm' },
+    ],
+  },
+  {
+    label: 'Spices products',
+    to: '/collections/spices-products',
+    children: [
+      { label: '100gm', to: '/collections/spices-100gm' },
+      { label: '50gm', to: '/collections/spices-50gm' },
+    ],
+  },
+  {
+    label: 'Cleaning products',
+    to: '/collections/cleaning-products',
+    children: [
+      { label: '1kg', to: '/collections/cleaning-1kg' },
+      { label: '500gm', to: '/collections/cleaning-500gm' },
+    ],
+  },
 ];
 
 function CartIcon() {
@@ -23,6 +48,26 @@ function CartIcon() {
       <circle cx="10" cy="20" r="1.4" fill="currentColor" />
       <circle cx="18" cy="20" r="1.4" fill="currentColor" />
     </svg>
+  );
+}
+
+function NavDropdown({ item }) {
+  return (
+    <div className="header__dropdown">
+      <Link to={item.to} className="header__dropdownTrigger">
+        {item.label}
+        {item.children && <span className="header__dropdownCaret" aria-hidden="true" />}
+      </Link>
+      {item.children && (
+        <div className="header__dropdownMenu">
+          {item.children.map((child) => (
+            <Link key={child.to} to={child.to} className="header__dropdownItem">
+              {child.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -66,24 +111,27 @@ export function Header({ config }) {
       <div className="header__inner page-width">
         <Link to="/" className="header__brand lift" aria-label={config.brandName || 'Home'}>
           <div className="header__brandInner">
+            <img src="/products/GPI Logo.png" alt="" className="header__logo" width={40} height={40} />
             <span className="header__wordmark">{brandShort}</span>
-            <span className="header__brandBadge">GPI / GTM</span>
           </div>
         </Link>
 
         <nav className="header__nav" aria-label="Primary">
-          {nav.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.end}
-              className={({ isActive }) =>
-                isActive ? 'header__link header__link--active' : 'header__link'
-              }
-            >
-              {item.label}
-            </NavLink>
-          ))}
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) =>
+              isActive ? 'header__link header__link--active' : 'header__link'
+            }
+          >
+            Home
+          </NavLink>
+          <div className="header__navGroup">
+            <span className="header__navLabel">Products category</span>
+            {productNav.map((item) => (
+              <NavDropdown key={item.to} item={item} />
+            ))}
+          </div>
         </nav>
 
         <div className="header__actions">
@@ -142,10 +190,26 @@ export function Header({ config }) {
             </button>
           </div>
           <div className="nav-drawer__links">
-            {nav.map((item) => (
-              <Link key={item.to} className="nav-drawer__link" to={item.to} onClick={() => setDrawerOpen(false)}>
-                {item.label}
-              </Link>
+            <Link className="nav-drawer__link" to="/" onClick={() => setDrawerOpen(false)}>
+              Home
+            </Link>
+            <span className="nav-drawer__section">Products category</span>
+            {productNav.map((item) => (
+              <div key={item.to} className="nav-drawer__group">
+                <Link className="nav-drawer__link" to={item.to} onClick={() => setDrawerOpen(false)}>
+                  {item.label}
+                </Link>
+                {item.children?.map((child) => (
+                  <Link
+                    key={child.to}
+                    className="nav-drawer__sublink"
+                    to={child.to}
+                    onClick={() => setDrawerOpen(false)}
+                  >
+                    {child.label}
+                  </Link>
+                ))}
+              </div>
             ))}
             <Link className="nav-drawer__link" to="/cart" onClick={() => setDrawerOpen(false)}>
               Cart ({count})

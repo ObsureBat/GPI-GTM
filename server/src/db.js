@@ -32,4 +32,10 @@ export function ensureSchema(db) {
     .prepare(`SELECT name FROM sqlite_master WHERE type='table' AND name='products'`)
     .get();
   if (!row) migrate(db);
+  else {
+    const cols = db.prepare('PRAGMA table_info(products)').all();
+    if (!cols.some((c) => c.name === 'sort_order')) {
+      db.exec('ALTER TABLE products ADD COLUMN sort_order INTEGER NOT NULL DEFAULT 9999');
+    }
+  }
 }

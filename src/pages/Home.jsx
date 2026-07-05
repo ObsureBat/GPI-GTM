@@ -5,20 +5,6 @@ import { ProductCard } from '../components/ProductCard.jsx';
 import { SplitHero } from '../components/SplitHero.jsx';
 import { HimalayanSaltModel } from '../components/HimalayanSaltModel.jsx';
 import { useCart } from '../contexts/CartContext.jsx';
-const FEATURED_ORDER = [
-  'gpi-chaat-masala-100g',
-  'gpi-chana-masala-100g',
-  'gpi-chicken-masala-100g',
-  'gtm-himalayan-pink-salt-200g',
-  'gtm-himalayan-rock-salt-200g',
-  'gpi-garam-masala-100g',
-  'gpi-gold-detergent-powder',
-  'gpi-himalayan-pink-salt',
-  'gpi-ktchen-king-100g',
-  'gpi-paneer-masala-100g',
-  'gpi-pav-bhaji-100g',
-  'gpi-premium-detergent-powder',
-];
 
 const whyFeatures = [
   {
@@ -96,12 +82,10 @@ export function Home() {
     return () => clearInterval(interval);
   }, [saltModelReady]);
 
-  const featured = useMemo(() => {
-    const map = new Map(products.map((p) => [p.handle, p]));
-    const preferred = FEATURED_ORDER.map((h) => map.get(h)).filter(Boolean);
-    const rest = products.filter((p) => !FEATURED_ORDER.includes(p.handle));
-    return [...preferred, ...rest];
-  }, [products]);
+  const featured = useMemo(
+    () => [...products].sort((a, b) => (a.sort_order ?? 9999) - (b.sort_order ?? 9999)),
+    [products]
+  );
 
   const page = 4;
   const slice = featured.slice(featIndex, featIndex + page);
@@ -213,7 +197,7 @@ export function Home() {
                   <li>Perfect for Cooking &amp; Seasoning</li>
                   <li>Premium Food Grade Quality</li>
                 </ul>
-                <Link to="/collections/pink-salt" className="btn btn--pink btn--large btn--wide">
+                <Link to="/collections/salt-products" className="btn btn--pink btn--large btn--wide">
                   Shop Pink Salt <span className="arrow">→</span>
                 </Link>
               </div>
@@ -245,7 +229,7 @@ export function Home() {
                   <li>Perfect for Chaats &amp; Fruits</li>
                   <li>Hygienically Packed Premium Quality</li>
                 </ul>
-                <Link to="/collections/black-salt" className="btn btn--gold btn--large btn--wide">
+                <Link to="/collections/salt-products" className="btn btn--gold btn--large btn--wide">
                   Shop Black Salt <span className="arrow">→</span>
                 </Link>
               </div>
@@ -297,7 +281,7 @@ export function Home() {
 
           <div className="journey__cta reveal">
             <h3>Experience the Purity of Himalayan Salt</h3>
-            <Link to="/collections/himalayan-salt" className="btn btn--gold btn--large">
+            <Link to="/collections/salt-products" className="btn btn--gold btn--large">
               Shop Himalayan Salt
             </Link>
           </div>
