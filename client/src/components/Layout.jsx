@@ -12,9 +12,12 @@ export function Layout() {
   useEffect(() => {
     api.getConfig().then(setConfig).catch(() =>
       setConfig({
-        brandName: 'GPI Industries',
+        brandName: 'GPI Industries Pvt. Ltd.',
         brandDescription: '',
-        announcement: { mainText: '', subText: '' },
+        announcement: {
+          mainText: 'WELCOME TO THE STORE',
+          subText: 'GPI INDUSTRIES PVT. LTD.',
+        },
         contact: {},
         social: {},
       })

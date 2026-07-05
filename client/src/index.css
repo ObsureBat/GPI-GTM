@@ -255,6 +255,51 @@ img {
   font-size: 0.8rem;
 }
 
+.announcement__close {
+  margin-left: auto;
+  padding: 0.15rem 0.45rem;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: color 0.2s var(--ease), background 0.2s var(--ease);
+}
+
+.announcement__close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 640px) {
+  .announcement {
+    font-size: 0.75rem;
+    padding: 0.5rem 0;
+  }
+
+  .announcement__inner {
+    gap: 0.4rem 0.6rem;
+    padding-right: 0.25rem;
+  }
+
+  .announcement__sub {
+    font-size: 0.7rem;
+  }
+
+  .announcement__close {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .announcement {
+    position: relative;
+  }
+}
+
 /* Header — flux layout, light glass */
 .sticky-header-wrapper {
   position: sticky;
