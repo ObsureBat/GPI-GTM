@@ -27,35 +27,28 @@ export function SplitHero() {
   return (
     <section
       ref={rootRef}
-      className={`merged-hero${visible ? ' merged-hero--visible' : ''}`}
+      className={`merged-hero merged-hero--stacked${visible ? ' merged-hero--visible' : ''}`}
       aria-label="GPI and GTM brand showcase"
     >
-      <div className="merged-hero__canvas" aria-hidden="true">
-        <div className="merged-hero__layer merged-hero__layer--gtm">
-          <img src={GTM_BACKGROUND_IMAGE} alt="" className="merged-hero__img" loading="eager" decoding="async" />
-          <div className="merged-hero__tint merged-hero__tint--gtm" />
+      <div className="merged-hero__stack">
+        <div className="merged-hero__pane merged-hero__pane--gtm">
+          <img src={GTM_BACKGROUND_IMAGE} alt="" className="merged-hero__pane-img" loading="eager" decoding="async" />
+          <div className="merged-hero__pane-tint merged-hero__pane-tint--gtm" />
+          <span className="merged-hero__pane-label">GTM · Himalayan Salt</span>
         </div>
-        <div className="merged-hero__layer merged-hero__layer--gpi">
-          <img src={GPI_BACKGROUND_IMAGE} alt="" className="merged-hero__img" loading="eager" decoding="async" />
-          <div className="merged-hero__tint merged-hero__tint--gpi" />
-        </div>
-        <div className="merged-hero__seam" />
-        <div className="merged-hero__glow" />
-        <div className="merged-hero__shimmer" />
-      </div>
 
-      <div className="merged-hero__content">
-        <div className="merged-hero__badges">
-          <span className="merged-hero__badge merged-hero__badge--gtm">GTM</span>
-          <span className="merged-hero__badge merged-hero__badge--gpi">GPI</span>
+        <div className="merged-hero__center">
+          <div className="merged-hero__center-glow" aria-hidden="true" />
+          <Link to="/collections/all" className="btn btn--primary btn--large merged-hero__cta">
+            View all products
+          </Link>
         </div>
-        <h1 className="merged-hero__title">Premium salts, spices &amp; home care</h1>
-        <p className="merged-hero__desc">
-          Himalayan minerals and authentic Indian essentials — crafted with purity, tradition, and trust.
-        </p>
-        <Link to="/collections/all" className="btn btn--primary btn--large merged-hero__cta">
-          View all products
-        </Link>
+
+        <div className="merged-hero__pane merged-hero__pane--gpi">
+          <img src={GPI_BACKGROUND_IMAGE} alt="" className="merged-hero__pane-img" loading="eager" decoding="async" />
+          <div className="merged-hero__pane-tint merged-hero__pane-tint--gpi" />
+          <span className="merged-hero__pane-label">GPI · Spices &amp; Home Care</span>
+        </div>
       </div>
     </section>
   );

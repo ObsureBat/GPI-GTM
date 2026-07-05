@@ -24,3 +24,12 @@ export function formatProductPrice(product, cents = product?.price_cents) {
   if (isComingSoonProduct(product)) return 'Coming soon';
   return formatInr(cents);
 }
+
+/** Visual size tier from pack weight (1kg larger, 100–200gm smaller). */
+export function getProductSizeClass(product) {
+  const text = `${product?.handle || ''} ${product?.title || ''}`.toLowerCase();
+  if (text.includes('1kg') || text.includes('1 kg')) return 'product-card--size-lg';
+  if (text.includes('500')) return 'product-card--size-md';
+  if (text.includes('200') || text.includes('100') || text.includes('50')) return 'product-card--size-sm';
+  return 'product-card--size-md';
+}

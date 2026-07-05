@@ -119,6 +119,26 @@ export function Header({ config }) {
           />
         </Link>
 
+        <nav className="header__navMobile" aria-label="Mobile quick links">
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) =>
+              isActive ? 'header__mobileLink header__mobileLink--active' : 'header__mobileLink'
+            }
+          >
+            Home
+          </NavLink>
+          <NavLink
+            to="/collections/all"
+            className={({ isActive }) =>
+              isActive ? 'header__mobileLink header__mobileLink--active' : 'header__mobileLink'
+            }
+          >
+            All products
+          </NavLink>
+        </nav>
+
         <nav className="header__nav" aria-label="Primary">
           <NavLink
             to="/"
