@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext.jsx';
-import { formatInr } from '../utils.js';
+import { formatInr, isComingSoonProduct } from '../utils.js';
 
 export function CartPage() {
   const { cart, loading, updateQty } = useCart();
@@ -25,12 +25,17 @@ export function CartPage() {
       ) : (
         <>
           <ul className="cart-list">
-            {items.map((line) => (
+            {items.map((line) => {
+              const lineProduct = { handle: line.handle, title: line.title };
+              const comingSoon = isComingSoonProduct(lineProduct);
+              return (
               <li key={line.product_id} className="cart-line">
                 <img src={line.image_url} alt="" width={96} height={96} />
                 <div className="cart-line__info">
                   <Link to={`/products/${line.handle}`}>{line.title}</Link>
-                  <p className="cart-line__price">{formatInr(line.price_cents)} each</p>
+                  <p className="cart-line__price">
+                    {comingSoon ? 'Coming soon' : `${formatInr(line.price_cents)} each`}
+                  </p>
                 </div>
                 <div className="cart-line__qty">
                   <button
@@ -49,9 +54,12 @@ export function CartPage() {
                     +
                   </button>
                 </div>
-                <div className="cart-line__total">{formatInr(line.price_cents * line.quantity)}</div>
+                <div className="cart-line__total">
+                  {comingSoon ? 'Coming soon' : formatInr(line.price_cents * line.quantity)}
+                </div>
               </li>
-            ))}
+            );
+            })}
           </ul>
           <div className="cart-summary">
             <p>

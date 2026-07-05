@@ -6,3 +6,21 @@ export function formatInr(cents) {
     maximumFractionDigits: 0,
   }).format(n);
 }
+
+/** Masala and detergent products show "Coming soon" instead of a price. */
+export function isComingSoonProduct(product) {
+  if (!product) return false;
+  const handle = (product.handle || '').toLowerCase();
+  const title = (product.title || '').toLowerCase();
+  return (
+    handle.includes('masala') ||
+    handle.includes('detergent') ||
+    title.includes('masala') ||
+    title.includes('detergent')
+  );
+}
+
+export function formatProductPrice(product, cents = product?.price_cents) {
+  if (isComingSoonProduct(product)) return 'Coming soon';
+  return formatInr(cents);
+}

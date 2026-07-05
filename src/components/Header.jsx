@@ -110,10 +110,13 @@ export function Header({ config }) {
     <header className="site-header">
       <div className="header__inner page-width">
         <Link to="/" className="header__brand lift" aria-label={config.brandName || 'Home'}>
-          <div className="header__brandInner">
-            <img src="/products/GPI Logo.png" alt="" className="header__logo" width={40} height={40} />
-            <span className="header__wordmark">{brandShort}</span>
-          </div>
+          <img
+            src="/products/GPI Logo.png"
+            alt={brandShort}
+            className="header__logo"
+            width={44}
+            height={44}
+          />
         </Link>
 
         <nav className="header__nav" aria-label="Primary">
@@ -127,7 +130,7 @@ export function Header({ config }) {
             Home
           </NavLink>
           <div className="header__navGroup">
-            <span className="header__navLabel">Products category</span>
+            <span className="header__navLabel">Products</span>
             {productNav.map((item) => (
               <NavDropdown key={item.to} item={item} />
             ))}
@@ -193,7 +196,7 @@ export function Header({ config }) {
             <Link className="nav-drawer__link" to="/" onClick={() => setDrawerOpen(false)}>
               Home
             </Link>
-            <span className="nav-drawer__section">Products category</span>
+            <span className="nav-drawer__section">Products</span>
             {productNav.map((item) => (
               <div key={item.to} className="nav-drawer__group">
                 <Link className="nav-drawer__link" to={item.to} onClick={() => setDrawerOpen(false)}>

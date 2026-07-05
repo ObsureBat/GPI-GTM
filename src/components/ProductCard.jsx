@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
-import { formatInr } from '../utils.js';
+import { formatProductPrice, isComingSoonProduct } from '../utils.js';
 
 export function ProductCard({ product, onAdd, className = '', style = {} }) {
   const tag = product.brand === 'gtm' ? 'GTM' : 'GPI';
   const tagClass = product.brand === 'gtm' ? 'tag tag--gtm' : 'tag tag--gpi';
+  const comingSoon = isComingSoonProduct(product);
 
   return (
     <article className={`product-card${className ? ` ${className}` : ''}`} style={style}>
@@ -16,15 +17,23 @@ export function ProductCard({ product, onAdd, className = '', style = {} }) {
           <h3 className="product-card__title">{product.title}</h3>
         </Link>
         <div className="product-card__price">
-          <span className="price-current">{formatInr(product.price_cents)}</span>
-          {product.compare_at_cents && product.compare_at_cents > product.price_cents && (
-            <span className="price-compare">{formatInr(product.compare_at_cents)}</span>
+          <span className={comingSoon ? 'price-coming-soon' : 'price-current'}>
+            {formatProductPrice(product)}
+          </span>
+          {!comingSoon && product.compare_at_cents && product.compare_at_cents > product.price_cents && (
+            <span className="price-compare">{formatProductPrice(product, product.compare_at_cents)}</span>
           )}
         </div>
         {onAdd && (
-          <button type="button" className="btn btn--primary btn--small" onClick={() => onAdd(product.id)}>
-            Add to cart
-          </button>
+          comingSoon ? (
+            <button type="button" className="btn btn--muted btn--small" disabled>
+              Coming soon
+            </button>
+          ) : (
+            <button type="button" className="btn btn--primary btn--small" onClick={() => onAdd(product.id)}>
+              Add to cart
+            </button>
+          )
         )}
       </div>
     </article>

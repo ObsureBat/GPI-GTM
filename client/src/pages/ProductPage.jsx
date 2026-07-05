@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '../api.js';
 import { useCart } from '../contexts/CartContext.jsx';
-import { formatInr } from '../utils.js';
+import { formatInr, formatProductPrice, isComingSoonProduct } from '../utils.js';
 import { ProductCard } from '../components/ProductCard.jsx';
 
 export function ProductPage() {
@@ -149,6 +149,8 @@ export function ProductPage() {
     return p.handle.length % 3 === 0;
   }, [p]);
 
+  const comingSoon = p && p !== false && isComingSoonProduct(p);
+
   const addToCartWithAnimation = async (id, quantity) => {
     try {
       // Only show global loading state if adding the main product
@@ -251,8 +253,10 @@ export function ProductPage() {
           </div>
 
           <div className="product-detail__price">
-            <span className="price-current">{formatInr(selectedSize?.price || p.price_cents)}</span>
-            {p.compare_at_cents && p.compare_at_cents > p.price_cents && (
+            <span className={comingSoon ? 'price-coming-soon' : 'price-current'}>
+              {formatProductPrice(p, selectedSize?.price || p.price_cents)}
+            </span>
+            {!comingSoon && p.compare_at_cents && p.compare_at_cents > p.price_cents && (
               <span className="price-compare">{formatInr(p.compare_at_cents)}</span>
             )}
           </div>
@@ -277,28 +281,30 @@ export function ProductPage() {
           )}
 
           <div className="product-detail__buy">
-            <div className="qty-selector">
-              <button type="button" onClick={() => setQty(Math.max(1, qty - 1))}>-</button>
-              <input
-                type="number"
-                min={1}
-                max={99}
-                value={qty}
-                onChange={(e) => setQty(Number(e.target.value) || 1)}
-              />
-              <button type="button" onClick={() => setQty(Math.min(99, qty + 1))}>+</button>
-            </div>
+            {!comingSoon && (
+              <div className="qty-selector">
+                <button type="button" onClick={() => setQty(Math.max(1, qty - 1))}>-</button>
+                <input
+                  type="number"
+                  min={1}
+                  max={99}
+                  value={qty}
+                  onChange={(e) => setQty(Number(e.target.value) || 1)}
+                />
+                <button type="button" onClick={() => setQty(Math.min(99, qty + 1))}>+</button>
+              </div>
+            )}
             <button
-               type="button"
-               className={`btn btn--primary btn--add-to-cart ${status === 'adding' ? 'adding' : ''}`}
-               onClick={() => addToCartWithAnimation(p.id, qty)}
-               disabled={status === 'adding'}
-             >
-               <span className="btn-text">
-                 {status === 'adding' ? 'Adding to cart...' : 'Add to cart'}
-               </span>
-               <span className="btn-icon">{status === 'adding' ? '✨' : '🛒'}</span>
-             </button>
+              type="button"
+              className={`btn ${comingSoon ? 'btn--muted' : 'btn--primary'} btn--add-to-cart ${status === 'adding' ? 'adding' : ''}`}
+              onClick={() => !comingSoon && addToCartWithAnimation(p.id, qty)}
+              disabled={comingSoon || status === 'adding'}
+            >
+              <span className="btn-text">
+                {comingSoon ? 'Coming soon' : status === 'adding' ? 'Adding to cart...' : 'Add to cart'}
+              </span>
+              {!comingSoon && <span className="btn-icon">{status === 'adding' ? '✨' : '🛒'}</span>}
+            </button>
           </div>
         </div>
       </div>
