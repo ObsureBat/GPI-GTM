@@ -92,18 +92,60 @@ export function Home() {
 
   return (
     <>
-      <section className="home-top">
-        <div className="home-top__grid page-width">
-          <div className="home-top__col home-top__col--hero">
+      <section className="home-layout">
+        <div className="home-layout__grid">
+          <div className="home-layout__col home-layout__col--hero">
             <SplitHero />
           </div>
-          <div className={`home-top__col home-top__col--salt${saltModelReady ? ' home-top__col--salt-ready' : ''}`}>
-            <div className="home-top__salt-inner">
-              <span className="home-top__salt-label">Himalayan Pink Salt</span>
-              <div className="home-top__salt-model">
-                <HimalayanSaltModel rotationDurationMs={saltRotationMs} onReady={() => setSaltModelReady(true)} />
+
+          <div className={`home-layout__col home-layout__col--journey section journey${saltModelReady ? ' home-layout__col--journey-ready' : ''}`}>
+            <div className="home-layout__journey-inner">
+              <span className="journey__badge reveal">Premium Quality</span>
+              <h2 className="journey__title">From Himalayan Mountains to Your Kitchen</h2>
+              <p className="journey__subtitle">
+                Discover the authentic journey of pure Himalayan pink salt — from ancient mountains to your table.
+              </p>
+
+              <div className={`journey-showcase journey-showcase--sidebar${saltModelReady ? ' journey-showcase--active' : ''}`}>
+                <div className="journey-showcase__visual">
+                  <div className="journey-showcase__model">
+                    <HimalayanSaltModel rotationDurationMs={saltRotationMs} onReady={() => setSaltModelReady(true)} />
+                  </div>
+                </div>
+
+                <div className="journey-showcase__content reveal">
+                  <div className="journey-showcase__steps">
+                    {journeySteps.map((s, idx) => (
+                      <button
+                        key={s.title}
+                        type="button"
+                        className={`journey-showcase__step-nav${activeStep === idx ? ' active' : ''}`}
+                        onClick={() => setActiveStep(idx)}
+                        aria-label={`Step ${idx + 1}`}
+                      >
+                        <span className="num">{idx + 1}</span>
+                        <span className="dot" />
+                      </button>
+                    ))}
+                  </div>
+
+                  <div key={activeStep} className="journey-showcase__active-step">
+                    <span className="journey-showcase__step-num">Stage 0{activeStep + 1}</span>
+                    <h3 className="journey-showcase__step-title">{journeySteps[activeStep].title}</h3>
+                    <p className="journey-showcase__step-text">{journeySteps[activeStep].text}</p>
+                    <div className="journey-showcase__step-media">
+                      <img src={journeySteps[activeStep].img} alt="" className="journey-showcase__step-img" />
+                    </div>
+                  </div>
+                </div>
               </div>
-              <p className="home-top__salt-caption">Rotate · Explore · Experience purity</p>
+
+              <div className="journey__cta reveal">
+                <h3>Experience the Purity of Himalayan Salt</h3>
+                <Link to="/collections/salt-products" className="btn btn--gold btn--large">
+                  Shop Himalayan Salt
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -247,51 +289,6 @@ export function Home() {
                 </Link>
               </div>
             </article>
-          </div>
-        </div>
-      </section>
-
-      <section className="section journey">
-        <div className="page-width">
-          <span className="journey__badge reveal">Premium Quality</span>
-          <h2 className="journey__title">From Himalayan Mountains to Your Kitchen</h2>
-          <p className="journey__subtitle">
-            Discover the authentic journey of pure Himalayan pink salt — from ancient mountains to your table.
-          </p>
-
-          <div className="journey-showcase journey-showcase--content-only">
-            <div className="journey-showcase__content reveal">
-              <div className="journey-showcase__steps">
-                {journeySteps.map((s, idx) => (
-                  <button
-                    key={s.title}
-                    type="button"
-                    className={`journey-showcase__step-nav${activeStep === idx ? ' active' : ''}`}
-                    onClick={() => setActiveStep(idx)}
-                    aria-label={`Step ${idx + 1}`}
-                  >
-                    <span className="num">{idx + 1}</span>
-                    <span className="dot" />
-                  </button>
-                ))}
-              </div>
-
-              <div key={activeStep} className="journey-showcase__active-step">
-                <span className="journey-showcase__step-num">Stage 0{activeStep + 1}</span>
-                <h3 className="journey-showcase__step-title">{journeySteps[activeStep].title}</h3>
-                <p className="journey-showcase__step-text">{journeySteps[activeStep].text}</p>
-                <div className="journey-showcase__step-media">
-                  <img src={journeySteps[activeStep].img} alt="" className="journey-showcase__step-img" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="journey__cta reveal">
-            <h3>Experience the Purity of Himalayan Salt</h3>
-            <Link to="/collections/salt-products" className="btn btn--gold btn--large">
-              Shop Himalayan Salt
-            </Link>
           </div>
         </div>
       </section>
