@@ -6,6 +6,10 @@
   "compatibility_date": "2026-07-03",
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": false,
+  "routes": [
+    { "pattern": "gpipvtltd.com", "custom_domain": true },
+    { "pattern": "www.gpipvtltd.com", "custom_domain": true }
+  ],
   "observability": {
     "enabled": true
   },
