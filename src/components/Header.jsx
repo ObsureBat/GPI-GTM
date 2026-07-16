@@ -235,12 +235,10 @@ export function Header({ config }) {
               setSearchOpen={setSearchOpen}
               onSearch={onSearch}
             />
-            <div className="header__accountWrapper">
-              <HeaderAuth />
-            </div>
+            <HeaderAuth />
           </div>
 
-          <Link to="/cart" className="btn header__cart lift" aria-label="Cart">
+          <Link to="/cart" className="btn header__cart lift header__cart--desktop" aria-label="Cart">
             <CartIcon />
             <span className="header__cartCount">{count}</span>
           </Link>
