@@ -173,6 +173,7 @@ export function Header({ config }) {
   }, [drawerOpen]);
 
   return (
+    <>
     <header className="site-header">
       <div className="header__inner page-width">
         <div className="header__brandSection">
@@ -254,6 +255,7 @@ export function Header({ config }) {
           </button>
         </div>
       </div>
+    </header>
 
       <div className="nav-drawer" data-open={drawerOpen || undefined} aria-hidden={!drawerOpen}>
         <button
@@ -262,7 +264,7 @@ export function Header({ config }) {
           aria-label="Close menu"
           onClick={closeDrawer}
         />
-        <div className="nav-drawer__panel">
+        <div className="nav-drawer__panel" role="dialog" aria-modal="true" aria-label="Site menu">
           <div className="nav-drawer__top">
             <span className="nav-drawer__title">Menu</span>
             <button type="button" className="btn btn--drawer-close" onClick={closeDrawer}>
@@ -343,6 +345,6 @@ export function Header({ config }) {
           </div>
         </div>
       </div>
-    </header>
+    </>
   );
 }
