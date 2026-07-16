@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { mediaUrl } from '../utils.js';
 
-const GTM_BACKGROUND_IMAGE = '/hero/gtm-hero.png';
-const GPI_BACKGROUND_IMAGE = '/hero/gpi-hero.png';
+const GTM_BACKGROUND_IMAGE = mediaUrl('banners/gtm-hero.png');
+const GPI_BACKGROUND_IMAGE = mediaUrl('banners/gpi-hero.png');
 
 export function SplitHero() {
   const rootRef = useRef(null);

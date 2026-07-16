@@ -1,3 +1,32 @@
+/** Cloudflare R2 public CDN (gpi-assets bucket). */
+const DEFAULT_CDN = 'https://pub-9f2bb156112a4aadb011103c8f05ad76.r2.dev';
+const CDN_BASE = (import.meta.env.VITE_CDN_URL || DEFAULT_CDN).replace(/\/$/, '');
+
+/** Normalize legacy /products/… paths to R2 keys (products/…). */
+export function normalizeMediaKey(path) {
+  if (!path) return '';
+  const trimmed = String(path).trim();
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return trimmed;
+  return trimmed.replace(/^\//, '');
+}
+
+/** Public URL for R2 object keys (products/…, banners/…, categories/…). */
+export function mediaUrl(path) {
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+
+  const key = normalizeMediaKey(path);
+  if (CDN_BASE) {
+    return `${CDN_BASE}/${key.split('/').map(encodeURIComponent).join('/')}`;
+  }
+
+  return key.startsWith('banners/') || key.startsWith('categories/') || key.startsWith('products/')
+    ? `${CDN_BASE}/${key.split('/').map(encodeURIComponent).join('/')}`
+    : path.startsWith('/')
+      ? path
+      : `${CDN_BASE}/${encodeURIComponent(key)}`;
+}
+
 export function formatInr(cents) {
   const n = (cents || 0) / 100;
   return new Intl.NumberFormat('en-IN', {

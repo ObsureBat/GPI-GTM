@@ -6,9 +6,20 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "npm run build && wrangler dev",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "npm run build && wrangler deploy",
+    "db:migrate": "wrangler d1 migrations apply gpi-store --local",
+    "db:migrate:remote": "wrangler d1 migrations apply gpi-store --remote",
+    "db:execute": "wrangler d1 execute gpi-store",
+    "db:info": "wrangler d1 info gpi-store",
+    "db:seed-catalog": "node scripts/seed-catalog.mjs",
+    "db:seed-catalog:local": "node scripts/seed-catalog.mjs --local",
+    "r2:setup": "node scripts/sync-r2-images.mjs --setup",
+    "r2:sync": "node scripts/sync-r2-images.mjs",
+    "db:seed-admin": "node scripts/seed-admin.mjs"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "jose": "^6.2.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0",

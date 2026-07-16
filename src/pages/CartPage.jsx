@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext.jsx';
-import { formatInr, isComingSoonProduct } from '../utils.js';
+import { formatInr, isComingSoonProduct, mediaUrl } from '../utils.js';
 
 export function CartPage() {
   const { cart, loading, updateQty } = useCart();
@@ -30,7 +30,7 @@ export function CartPage() {
               const comingSoon = isComingSoonProduct(lineProduct);
               return (
               <li key={line.product_id} className="cart-line">
-                <img src={line.image_url} alt="" width={96} height={96} />
+                <img src={mediaUrl(line.image_url)} alt="" width={96} height={96} />
                 <div className="cart-line__info">
                   <Link to={`/products/${line.handle}`}>{line.title}</Link>
                   <p className="cart-line__price">

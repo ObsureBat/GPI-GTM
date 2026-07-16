@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { formatProductPrice, getProductSizeClass, isComingSoonProduct } from '../utils.js';
+import { formatProductPrice, getProductSizeClass, isComingSoonProduct, mediaUrl } from '../utils.js';
 
 export function ProductCard({ product, onAdd, className = '', style = {} }) {
   const tag = product.brand === 'gtm' ? 'GTM' : 'GPI';
@@ -13,7 +13,7 @@ export function ProductCard({ product, onAdd, className = '', style = {} }) {
       style={style}
     >
       <Link to={`/products/${product.handle}`} className="product-card__media">
-        <img src={product.image_url} alt="" loading="lazy" />
+        <img src={mediaUrl(product.image_url)} alt="" loading="lazy" />
         <span className={tagClass}>{tag}</span>
       </Link>
       <div className="product-card__body">

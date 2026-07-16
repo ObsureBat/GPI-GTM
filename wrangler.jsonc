@@ -1,17 +1,40 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "gpi2",
+  "main": "worker/index.js",
   "account_id": "3000a5c887043520f1a7c7093ca6986b",
   "compatibility_date": "2026-07-03",
+  "compatibility_flags": ["nodejs_compat"],
   "workers_dev": false,
   "observability": {
     "enabled": true
   },
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
+    "not_found_handling": "single-page-application",
+    "binding": "ASSETS"
   },
   "build": {
     "command": "npm run build"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "gpi-store",
+      "database_id": "c9eaf2a8-1bc3-43a4-9561-e9fa41b9c31f",
+      "migrations_dir": "migrations",
+      "remote": true
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "gpi-assets",
+      "remote": true
+    }
+  ],
+  "vars": {
+    "CDN_URL": "https://pub-9f2bb156112a4aadb011103c8f05ad76.r2.dev",
+    "JWT_SECRET": "dev-jwt-secret-change-in-production-min-32-chars"
   }
 }

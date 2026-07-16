@@ -59,7 +59,7 @@ export function CheckoutPage() {
           Order <strong>#{done.order_id}</strong> placed. Total {formatInr(done.total_cents)}.
         </p>
         <p className="checkout-success__note">
-          This demo records orders in your local SQLite database. Connect a payment gateway for production.
+          Orders are saved in Cloudflare D1. Connect a payment gateway for production.
         </p>
         <Link to="/" className="btn btn--primary">
           Continue shopping

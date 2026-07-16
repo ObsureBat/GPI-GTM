@@ -1,20 +1,44 @@
-import { useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '../api.js';
 import { useCart } from '../contexts/CartContext.jsx';
-import { formatInr, formatProductPrice, isComingSoonProduct } from '../utils.js';
+import { useAuth } from '../auth/AuthContext.jsx';
+import { formatInr, formatProductPrice, isComingSoonProduct, mediaUrl } from '../utils.js';
 import { ProductCard } from '../components/ProductCard.jsx';
+
+function formatReviewDate(iso) {
+  if (!iso) return '';
+  try {
+    return new Intl.DateTimeFormat('en-IN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    }).format(new Date(iso));
+  } catch {
+    return String(iso).slice(0, 10);
+  }
+}
+
+const EMPTY_STATS = {
+  avg: 0,
+  count: 0,
+  dist: [5, 4, 3, 2, 1].map((s) => ({ stars: s, count: 0 })),
+};
 
 export function ProductPage() {
   const { handle } = useParams();
   const [p, setP] = useState(null);
   const [qty, setQty] = useState(1);
   const { addToCart } = useCart();
+  const { user } = useAuth();
   const [related, setRelated] = useState([]);
   const [selectedSize, setSelectedSize] = useState(null);
   const [allProducts, setAllProducts] = useState([]);
 
-  const [userReviews, setUserReviews] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [ratingStats, setRatingStats] = useState(EMPTY_STATS);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
   const [reviewForm, setReviewForm] = useState({
     name: '',
     title: '',
@@ -72,76 +96,30 @@ export function ProductPage() {
     return undefined;
   }, [p]);
 
-  useEffect(() => {
-    if (!handle) return undefined;
-    const key = `gpi_reviews:${handle}`;
+  const loadReviews = useCallback(async () => {
+    if (!handle) return;
+    setReviewsLoading(true);
     try {
-      const raw = localStorage.getItem(key);
-      if (!raw) return undefined;
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) setUserReviews(parsed);
+      const data = await api.getReviews(handle);
+      setReviews(data.reviews || []);
+      setRatingStats(data.stats || EMPTY_STATS);
     } catch {
-      // Ignore storage issues (private mode, blocked storage, etc.)
+      setReviews([]);
+      setRatingStats(EMPTY_STATS);
+    } finally {
+      setReviewsLoading(false);
     }
-    return undefined;
   }, [handle]);
 
   useEffect(() => {
-    if (!handle) return undefined;
-    const key = `gpi_reviews:${handle}`;
-    try {
-      localStorage.setItem(key, JSON.stringify(userReviews));
-    } catch {
-      // Ignore storage issues
+    loadReviews();
+  }, [loadReviews]);
+
+  useEffect(() => {
+    if (user?.name) {
+      setReviewForm((f) => ({ ...f, name: user.name }));
     }
-    return undefined;
-  }, [userReviews, handle]);
-
-  const mockReviews = useMemo(() => {
-    if (!p || p === false) return [];
-    // Deterministic mock reviews from handle (no backend schema yet).
-    const seed = Array.from(p.handle).reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
-    const names = ['Asha', 'Rohit', 'Meera', 'Kabir', 'Priya', 'Vikram', 'Nisha', 'Arjun'];
-    const titles = ['Excellent quality', 'Perfect taste', 'Good value for money', 'Highly recommend', 'Great product'];
-    const bodies = [
-      'The product arrived well packed and looks exactly like the listing. Taste is spot on.',
-      'What I liked most is the consistency—no surprises. Will reorder again.',
-      'Really impressed with freshness and packaging quality. Makes my cooking easier.',
-      'Nice aroma and flavor. One of the better options I tried recently.',
-      'Overall a solid purchase. Works great for everyday use.',
-    ];
-
-    const starFrom = (i) => {
-      const v = (seed + i * 7) % 20; // 0..19
-      return v < 2 ? 2 : v < 6 ? 3 : v < 13 ? 4 : 5;
-    };
-
-    return Array.from({ length: 6 }).map((_, i) => {
-      const id = `mock:${p.handle}:${i}`;
-      return {
-        id,
-        name: names[(seed + i) % names.length],
-        title: titles[(seed + i * 3) % titles.length],
-        rating: starFrom(i),
-        date: new Date(Date.now() - (i + 1) * 86400000 * 13).toISOString().slice(0, 10),
-        body: bodies[(seed + i * 5) % bodies.length],
-      };
-    });
-  }, [p]);
-
-  const allReviews = useMemo(() => {
-    return [...mockReviews, ...userReviews].slice(0, 20);
-  }, [mockReviews, userReviews]);
-
-  const ratingStats = useMemo(() => {
-    const totals = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-    for (const r of allReviews) totals[r.rating] = (totals[r.rating] || 0) + 1;
-    const count = allReviews.length || 1;
-    const sum = allReviews.reduce((acc, r) => acc + r.rating, 0);
-    const avg = sum / count;
-    const dist = [5, 4, 3, 2, 1].map((s) => ({ stars: s, count: totals[s] }));
-    return { avg, count: allReviews.length, dist };
-  }, [allReviews]);
+  }, [user?.name]);
 
   const isBestSeller = useMemo(() => {
     if (!p || p === false) return false;
@@ -171,7 +149,7 @@ export function ProductPage() {
     }
   };
 
-  const onSubmitReview = (e) => {
+  const onSubmitReview = async (e) => {
     e.preventDefault();
     setReviewErr(null);
 
@@ -183,24 +161,26 @@ export function ProductPage() {
     if (!name || name.length < 2) return setReviewErr('Please enter your name.');
     if (!title || title.length < 3) return setReviewErr('Please add a short title.');
     if (!body || body.length < 20) return setReviewErr('Please write at least 20 characters.');
-    if (Number.isNaN(rating) || rating < 1 || rating > 5) return setReviewErr('Rating must be between 1 and 5.');
+    if (Number.isNaN(rating) || rating < 1 || rating > 5) {
+      return setReviewErr('Rating must be between 1 and 5.');
+    }
 
     if (!handle) return undefined;
 
-    const id = `user:${handle}:${Date.now()}`;
-    const newReview = {
-      id,
-      name,
-      title,
-      rating,
-      date: new Date().toISOString().slice(0, 10),
-      body,
-    };
-
-    setUserReviews((prev) => [newReview, ...prev]);
-    setHighlightReviewId(id);
-    setReviewForm({ name: '', title: '', rating: 5, body: '' });
+    setReviewSubmitting(true);
+    try {
+      const created = await api.submitReview(handle, { name, title, rating, body });
+      setHighlightReviewId(created.id);
+      setReviewForm((f) => ({ ...f, title: '', rating: 5, body: '' }));
+      await loadReviews();
+    } catch (err) {
+      setReviewErr(err.message || 'Could not submit review. Please try again.');
+    } finally {
+      setReviewSubmitting(false);
+    }
   };
+
+  const hasReviews = ratingStats.count > 0;
 
   const scrollCarousel = (direction) => {
     if (!carouselRef.current) return;
@@ -232,7 +212,7 @@ export function ProductPage() {
     <div className="page-width page-section product-detail">
       <div className="product-detail__grid">
         <div className="product-detail__media reveal">
-          <img src={p.image_url} alt={p.title} />
+          <img src={mediaUrl(p.image_url)} alt={p.title} />
         </div>
         <div className="product-detail__info reveal">
           <div className="product-detail__meta">
@@ -244,12 +224,18 @@ export function ProductPage() {
           <h1>{p.title}</h1>
           
           <div className="product-detail__rating-summary" onClick={() => document.getElementById('reviews').scrollIntoView({ behavior: 'smooth' })}>
-            <div className="stars">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <span key={i} className={i < Math.round(ratingStats.avg) ? 'star star--on' : 'star'}>★</span>
-              ))}
-            </div>
-            <span className="count">{ratingStats.count} Reviews</span>
+            {hasReviews ? (
+              <>
+                <div className="stars">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span key={i} className={i < Math.round(ratingStats.avg) ? 'star star--on' : 'star'}>★</span>
+                  ))}
+                </div>
+                <span className="count">{ratingStats.count} Review{ratingStats.count === 1 ? '' : 's'}</span>
+              </>
+            ) : (
+              <span className="count count--muted">No reviews yet</span>
+            )}
           </div>
 
           <div className="product-detail__price">
@@ -356,21 +342,30 @@ export function ProductPage() {
 
           <div className="reviews-summary">
             <div className="reviews-summary__left">
-              <div className="reviews-rating">
-                <div className="reviews-rating__avg" aria-label={`Average rating ${ratingStats.avg.toFixed(1)} out of 5`}>
-                  {ratingStats.avg.toFixed(1)}
+              {hasReviews ? (
+                <>
+                  <div className="reviews-rating">
+                    <div className="reviews-rating__avg" aria-label={`Average rating ${ratingStats.avg.toFixed(1)} out of 5`}>
+                      {ratingStats.avg.toFixed(1)}
+                    </div>
+                    <div className="reviews-rating__stars" aria-hidden="true">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <span key={i} className={i < Math.round(ratingStats.avg) ? 'star star--on' : 'star'}>
+                          ★
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <p className="reviews-count">
+                    Based on {ratingStats.count} verified review{ratingStats.count === 1 ? '' : 's'}
+                  </p>
+                </>
+              ) : (
+                <div className="reviews-summary__empty">
+                  <p className="reviews-summary__empty-label">Overall rating</p>
+                  <p className="reviews-summary__empty-value">Not rated yet</p>
                 </div>
-                <div className="reviews-rating__stars" aria-hidden="true">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <span key={i} className={i < Math.round(ratingStats.avg) ? 'star star--on' : 'star'}>
-                      ★
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <p className="reviews-count">
-                {ratingStats.count} review{ratingStats.count === 1 ? '' : 's'}
-              </p>
+              )}
             </div>
 
             <div className="reviews-summary__right">
@@ -393,10 +388,31 @@ export function ProductPage() {
 
           <div className="reviews-content">
             <div className="reviews-list">
-              {allReviews.length === 0 ? (
-                <p className="reviews-empty">Be the first to review this product.</p>
+              {reviewsLoading ? (
+                <div className="reviews-loading">
+                  <span className="spinner" aria-hidden="true" />
+                  <p>Loading reviews…</p>
+                </div>
+              ) : reviews.length === 0 ? (
+                <div className="reviews-empty-state">
+                  <div className="reviews-empty-state__icon" aria-hidden="true">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.2 22 12 18.56 5.8 22 7 14.14l-5-4.87 7.1-1.01L12 2z"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="reviews-empty-state__title">No reviews yet</h3>
+                  <p className="reviews-empty-state__text">
+                    Be the first to share your experience with this product. Your feedback helps other
+                    customers shop with confidence.
+                  </p>
+                </div>
               ) : (
-                allReviews.map((r, idx) => (
+                reviews.map((r, idx) => (
                   <article
                     key={r.id}
                     className={`review-card reveal reveal--stagger${r.id === highlightReviewId ? ' review-card--new' : ''}`}
@@ -415,7 +431,7 @@ export function ProductPage() {
                         ))}
                       </div>
                     </div>
-                    <div className="review-card__date">{r.date}</div>
+                    <div className="review-card__date">{formatReviewDate(r.created_at || r.date)}</div>
                     <p className="review-card__body">{r.body}</p>
                   </article>
                 ))
@@ -424,6 +440,7 @@ export function ProductPage() {
 
             <form className="review-form" onSubmit={onSubmitReview}>
               <h3>Write a review</h3>
+              <p className="review-form__hint">Share an honest rating and a few details about quality, taste, or packaging.</p>
 
               <label>
                 Your name
@@ -431,6 +448,8 @@ export function ProductPage() {
                   className="input"
                   value={reviewForm.name}
                   onChange={(e) => setReviewForm((f) => ({ ...f, name: e.target.value }))}
+                  disabled={!!user?.name || reviewSubmitting}
+                  placeholder="Your name"
                 />
               </label>
 
@@ -440,6 +459,8 @@ export function ProductPage() {
                   className="input"
                   value={reviewForm.title}
                   onChange={(e) => setReviewForm((f) => ({ ...f, title: e.target.value }))}
+                  disabled={reviewSubmitting}
+                  placeholder="Summarize your experience"
                 />
               </label>
 
@@ -449,6 +470,7 @@ export function ProductPage() {
                   className="input"
                   value={reviewForm.rating}
                   onChange={(e) => setReviewForm((f) => ({ ...f, rating: Number(e.target.value) }))}
+                  disabled={reviewSubmitting}
                 >
                   {[5, 4, 3, 2, 1].map((n) => (
                     <option key={n} value={n}>
@@ -465,13 +487,15 @@ export function ProductPage() {
                   rows={5}
                   value={reviewForm.body}
                   onChange={(e) => setReviewForm((f) => ({ ...f, body: e.target.value }))}
+                  disabled={reviewSubmitting}
+                  placeholder="What did you like? How was the quality and packaging?"
                 />
               </label>
 
               {reviewErr && <p className="form-error">{reviewErr}</p>}
 
-              <button type="submit" className="btn btn--primary btn--large">
-                Submit review
+              <button type="submit" className="btn btn--primary btn--large" disabled={reviewSubmitting}>
+                {reviewSubmitting ? 'Submitting…' : 'Submit review'}
               </button>
             </form>
           </div>

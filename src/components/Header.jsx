@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext.jsx';
+import { useAuth } from '../auth/AuthContext.jsx';
 import { api } from '../api.js';
+import { mediaUrl } from '../utils.js';
+import { HeaderAuth } from './HeaderAuth.jsx';
 
 const productNav = [
   {
@@ -51,6 +54,15 @@ function CartIcon() {
   );
 }
 
+function SearchIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M16.5 16.5L21 21" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 function NavDropdown({ item }) {
   return (
     <div className="header__dropdown">
@@ -73,6 +85,7 @@ function NavDropdown({ item }) {
 
 export function Header({ config }) {
   const { cart } = useCart();
+  const { user, logout, isAdmin } = useAuth();
   const [q, setQ] = useState('');
   const [results, setResults] = useState([]);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -80,6 +93,13 @@ export function Header({ config }) {
 
   const count = cart?.item_count ?? 0;
   const brandShort = config.brandName?.split(' ')[0] || 'Store';
+
+  const closeDrawer = () => setDrawerOpen(false);
+
+  async function handleDrawerLogout() {
+    closeDrawer();
+    await logout();
+  }
 
   const onSearch = async (e) => {
     e.preventDefault();
@@ -109,88 +129,107 @@ export function Header({ config }) {
   return (
     <header className="site-header">
       <div className="header__inner page-width">
-        <Link to="/" className="header__brand lift" aria-label={config.brandName || 'Home'}>
-          <img
-            src="/products/GPI Logo.png"
-            alt={brandShort}
-            className="header__logo"
-            width={44}
-            height={44}
-          />
-        </Link>
+        {/* Logo Section - Left */}
+        <div className="header__brandSection">
+          <Link to="/" className="header__brand lift" aria-label={config.brandName || 'Home'}>
+            <img
+              src={mediaUrl('banners/gpi-logo.png')}
+              alt={brandShort}
+              className="header__logo"
+              width={44}
+              height={44}
+            />
+          </Link>
+        </div>
 
-        <nav className="header__navMobile" aria-label="Mobile quick links">
-          <NavLink
-            to="/"
-            end
-            className={({ isActive }) =>
-              isActive ? 'header__mobileLink header__mobileLink--active' : 'header__mobileLink'
-            }
-          >
-            Home
-          </NavLink>
-          <NavLink
-            to="/collections/all"
-            className={({ isActive }) =>
-              isActive ? 'header__mobileLink header__mobileLink--active' : 'header__mobileLink'
-            }
-          >
-            All products
-          </NavLink>
-        </nav>
+        {/* Navigation Section - Center */}
+        <div className="header__navSection">
+          <nav className="header__navMobile" aria-label="Mobile quick links">
+            <NavLink
+              to="/"
+              end
+              className={({ isActive }) =>
+                isActive ? 'header__mobileLink header__mobileLink--active' : 'header__mobileLink'
+              }
+            >
+              Home
+            </NavLink>
+            <NavLink
+              to="/collections/all"
+              className={({ isActive }) =>
+                isActive ? 'header__mobileLink header__mobileLink--active' : 'header__mobileLink'
+              }
+            >
+              All products
+            </NavLink>
+          </nav>
 
-        <nav className="header__nav" aria-label="Primary">
-          <NavLink
-            to="/"
-            end
-            className={({ isActive }) =>
-              isActive ? 'header__link header__link--active' : 'header__link'
-            }
-          >
-            Home
-          </NavLink>
-          <div className="header__navGroup">
-            <span className="header__navLabel">Products</span>
+          <nav className="header__nav" aria-label="Primary">
+            <NavLink
+              to="/"
+              end
+              className={({ isActive }) =>
+                isActive ? 'header__link header__link--active' : 'header__link'
+              }
+            >
+              Home
+            </NavLink>
             {productNav.map((item) => (
               <NavDropdown key={item.to} item={item} />
             ))}
-          </div>
-        </nav>
+          </nav>
+        </div>
 
+        {/* Actions Section - Right */}
         <div className="header__actions">
-          <form className="header__search" onSubmit={onSearch}>
-            <input
-              type="search"
-              placeholder="Search…"
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              onFocus={() => q.trim().length >= 2 && setSearchOpen(true)}
-              aria-label="Search products"
-            />
-            <button type="submit" className="btn btn--header-search">
-              Search
-            </button>
-          </form>
-          {searchOpen && results.length > 0 && (
-            <div className="search-dropdown" role="listbox">
-              {results.map((p) => (
-                <Link
-                  key={p.id}
-                  to={`/products/${p.handle}`}
-                  className="search-dropdown__item"
-                  onClick={() => setSearchOpen(false)}
-                >
-                  <img src={p.image_url} alt="" width={40} height={40} />
-                  <span>{p.title}</span>
-                </Link>
-              ))}
-            </div>
-          )}
+          <div className="header__searchWrapper">
+            <form className="header__search" onSubmit={onSearch} role="search">
+              <input
+                type="search"
+                placeholder="Search…"
+                value={q}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setQ(val);
+                  if (val.trim().length < 2) {
+                    setResults([]);
+                    setSearchOpen(false);
+                  }
+                }}
+                onFocus={() => q.trim().length >= 2 && results.length > 0 && setSearchOpen(true)}
+                onBlur={() => setTimeout(() => setSearchOpen(false), 150)}
+                aria-label="Search products"
+              />
+              <button type="submit" className="header__searchBtn" aria-label="Search">
+                <SearchIcon />
+              </button>
+            </form>
+            {searchOpen && results.length > 0 && (
+              <div className="search-dropdown" role="listbox">
+                {results.map((p) => (
+                  <Link
+                    key={p.id}
+                    to={`/products/${p.handle}`}
+                    className="search-dropdown__item"
+                    onClick={() => setSearchOpen(false)}
+                  >
+                    <img src={mediaUrl(p.image_url)} alt="" width={40} height={40} />
+                    <span>{p.title}</span>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
 
-          <Link to="/cart" className="btn header__cart" aria-label="Cart">
+          <div className="header__accountWrapper">
+            <HeaderAuth />
+          </div>
+
+          <Link to="/cart" className="btn header__cart lift" aria-label="Cart">
             <CartIcon />
             <span className="header__cartCount">{count}</span>
           </Link>
+
           <button
             type="button"
             className="btn header__menu"
@@ -216,7 +255,6 @@ export function Header({ config }) {
             <Link className="nav-drawer__link" to="/" onClick={() => setDrawerOpen(false)}>
               Home
             </Link>
-            <span className="nav-drawer__section">Products</span>
             {productNav.map((item) => (
               <div key={item.to} className="nav-drawer__group">
                 <Link className="nav-drawer__link" to={item.to} onClick={() => setDrawerOpen(false)}>
@@ -234,9 +272,32 @@ export function Header({ config }) {
                 ))}
               </div>
             ))}
-            <Link className="nav-drawer__link" to="/cart" onClick={() => setDrawerOpen(false)}>
+            <Link className="nav-drawer__link" to="/cart" onClick={closeDrawer}>
               Cart ({count})
             </Link>
+            <span className="nav-drawer__section">Account</span>
+            {user ? (
+              <>
+                <p className="nav-drawer__user">{user.name || user.email}</p>
+                {isAdmin && (
+                  <Link className="nav-drawer__link" to="/admin/dashboard" onClick={closeDrawer}>
+                    Admin dashboard
+                  </Link>
+                )}
+                <button type="button" className="nav-drawer__link nav-drawer__link--button" onClick={handleDrawerLogout}>
+                  Sign out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link className="nav-drawer__link" to="/sign-in" onClick={closeDrawer}>
+                  Sign in
+                </Link>
+                <Link className="nav-drawer__link nav-drawer__link--accent" to="/sign-up" onClick={closeDrawer}>
+                  Create account
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
