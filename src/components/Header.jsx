@@ -83,6 +83,52 @@ function NavDropdown({ item }) {
   );
 }
 
+function SearchForm({ q, setQ, results, setResults, searchOpen, setSearchOpen, onSearch, onPick, compact }) {
+  return (
+    <div className={`header__searchWrapper${compact ? ' header__searchWrapper--drawer' : ''}`}>
+      <form className={`header__search${compact ? ' header__search--drawer' : ''}`} onSubmit={onSearch} role="search">
+        <input
+          type="search"
+          placeholder="Search products…"
+          value={q}
+          onChange={(e) => {
+            const val = e.target.value;
+            setQ(val);
+            if (val.trim().length < 2) {
+              setResults([]);
+              setSearchOpen(false);
+            }
+          }}
+          onFocus={() => q.trim().length >= 2 && results.length > 0 && setSearchOpen(true)}
+          onBlur={() => setTimeout(() => setSearchOpen(false), 150)}
+          aria-label="Search products"
+        />
+        <button type="submit" className="header__searchBtn" aria-label="Search">
+          <SearchIcon />
+        </button>
+      </form>
+      {searchOpen && results.length > 0 && (
+        <div className="search-dropdown" role="listbox">
+          {results.map((p) => (
+            <Link
+              key={p.id}
+              to={`/products/${p.handle}`}
+              className="search-dropdown__item"
+              onClick={() => {
+                setSearchOpen(false);
+                onPick?.();
+              }}
+            >
+              <img src={mediaUrl(p.image_url)} alt="" width={40} height={40} />
+              <span>{p.title}</span>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function Header({ config }) {
   const { cart } = useCart();
   const { user, logout, isAdmin } = useAuth();
@@ -129,7 +175,6 @@ export function Header({ config }) {
   return (
     <header className="site-header">
       <div className="header__inner page-width">
-        {/* Logo Section - Left */}
         <div className="header__brandSection">
           <Link to="/" className="header__brand lift" aria-label={config.brandName || 'Home'}>
             <img
@@ -142,7 +187,6 @@ export function Header({ config }) {
           </Link>
         </div>
 
-        {/* Navigation Section - Center */}
         <div className="header__navSection">
           <nav className="header__navMobile" aria-label="Mobile quick links">
             <NavLink
@@ -180,49 +224,20 @@ export function Header({ config }) {
           </nav>
         </div>
 
-        {/* Actions Section - Right */}
         <div className="header__actions">
-          <div className="header__searchWrapper">
-            <form className="header__search" onSubmit={onSearch} role="search">
-              <input
-                type="search"
-                placeholder="Search…"
-                value={q}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setQ(val);
-                  if (val.trim().length < 2) {
-                    setResults([]);
-                    setSearchOpen(false);
-                  }
-                }}
-                onFocus={() => q.trim().length >= 2 && results.length > 0 && setSearchOpen(true)}
-                onBlur={() => setTimeout(() => setSearchOpen(false), 150)}
-                aria-label="Search products"
-              />
-              <button type="submit" className="header__searchBtn" aria-label="Search">
-                <SearchIcon />
-              </button>
-            </form>
-            {searchOpen && results.length > 0 && (
-              <div className="search-dropdown" role="listbox">
-                {results.map((p) => (
-                  <Link
-                    key={p.id}
-                    to={`/products/${p.handle}`}
-                    className="search-dropdown__item"
-                    onClick={() => setSearchOpen(false)}
-                  >
-                    <img src={mediaUrl(p.image_url)} alt="" width={40} height={40} />
-                    <span>{p.title}</span>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className="header__accountWrapper">
-            <HeaderAuth />
+          <div className="header__actionsDesktop">
+            <SearchForm
+              q={q}
+              setQ={setQ}
+              results={results}
+              setResults={setResults}
+              searchOpen={searchOpen}
+              setSearchOpen={setSearchOpen}
+              onSearch={onSearch}
+            />
+            <div className="header__accountWrapper">
+              <HeaderAuth />
+            </div>
           </div>
 
           <Link to="/cart" className="btn header__cart lift" aria-label="Cart">
@@ -243,38 +258,63 @@ export function Header({ config }) {
       </div>
 
       <div className="nav-drawer" data-open={drawerOpen || undefined} aria-hidden={!drawerOpen}>
-        <button type="button" className="nav-drawer__backdrop" aria-label="Close menu" onClick={() => setDrawerOpen(false)} />
+        <button
+          type="button"
+          className="nav-drawer__backdrop"
+          aria-label="Close menu"
+          onClick={closeDrawer}
+        />
         <div className="nav-drawer__panel">
           <div className="nav-drawer__top">
-            <span className="nav-drawer__title">Navigate</span>
-            <button type="button" className="btn btn--drawer-close" onClick={() => setDrawerOpen(false)}>
+            <span className="nav-drawer__title">Menu</span>
+            <button type="button" className="btn btn--drawer-close" onClick={closeDrawer}>
               Close
             </button>
           </div>
+
+          <SearchForm
+            q={q}
+            setQ={setQ}
+            results={results}
+            setResults={setResults}
+            searchOpen={searchOpen}
+            setSearchOpen={setSearchOpen}
+            onSearch={onSearch}
+            onPick={closeDrawer}
+            compact
+          />
+
           <div className="nav-drawer__links">
-            <Link className="nav-drawer__link" to="/" onClick={() => setDrawerOpen(false)}>
+            <span className="nav-drawer__section">Shop</span>
+            <Link className="nav-drawer__link" to="/" onClick={closeDrawer}>
               Home
             </Link>
             {productNav.map((item) => (
               <div key={item.to} className="nav-drawer__group">
-                <Link className="nav-drawer__link" to={item.to} onClick={() => setDrawerOpen(false)}>
+                <Link className="nav-drawer__link" to={item.to} onClick={closeDrawer}>
                   {item.label}
                 </Link>
-                {item.children?.map((child) => (
-                  <Link
-                    key={child.to}
-                    className="nav-drawer__sublink"
-                    to={child.to}
-                    onClick={() => setDrawerOpen(false)}
-                  >
-                    {child.label}
-                  </Link>
-                ))}
+                {item.children?.length ? (
+                  <div className="nav-drawer__sizes">
+                    {item.children.map((child) => (
+                      <Link
+                        key={child.to}
+                        className="nav-drawer__sizeChip"
+                        to={child.to}
+                        onClick={closeDrawer}
+                      >
+                        {child.label}
+                      </Link>
+                    ))}
+                  </div>
+                ) : null}
               </div>
             ))}
+
             <Link className="nav-drawer__link" to="/cart" onClick={closeDrawer}>
               Cart ({count})
             </Link>
+
             <span className="nav-drawer__section">Account</span>
             {user ? (
               <>
@@ -284,19 +324,23 @@ export function Header({ config }) {
                     Admin dashboard
                   </Link>
                 )}
-                <button type="button" className="nav-drawer__link nav-drawer__link--button" onClick={handleDrawerLogout}>
+                <button
+                  type="button"
+                  className="nav-drawer__link nav-drawer__link--button"
+                  onClick={handleDrawerLogout}
+                >
                   Sign out
                 </button>
               </>
             ) : (
-              <>
-                <Link className="nav-drawer__link" to="/sign-in" onClick={closeDrawer}>
+              <div className="nav-drawer__auth">
+                <Link className="nav-drawer__authBtn nav-drawer__authBtn--ghost" to="/sign-in" onClick={closeDrawer}>
                   Sign in
                 </Link>
-                <Link className="nav-drawer__link nav-drawer__link--accent" to="/sign-up" onClick={closeDrawer}>
-                  Create account
+                <Link className="nav-drawer__authBtn nav-drawer__authBtn--primary" to="/sign-up" onClick={closeDrawer}>
+                  Sign up
                 </Link>
-              </>
+              </div>
             )}
           </div>
         </div>
