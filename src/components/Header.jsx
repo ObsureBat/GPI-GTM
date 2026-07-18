@@ -54,6 +54,21 @@ function CartIcon() {
   );
 }
 
+function UserIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function SearchIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -207,8 +222,8 @@ export function Header({ config }) {
               </Link>
             ) : (
               <>
-                <Link to="/sign-in" className="header__mobileActionBtn header__mobileActionBtn--signIn">
-                  Sign in
+                <Link to="/sign-in" className="header__mobileActionBtn header__mobileActionBtn--icon" aria-label="Sign in">
+                  <UserIcon />
                 </Link>
                 <Link to="/sign-up" className="header__mobileActionBtn header__mobileActionBtn--signUp">
                   Sign up
