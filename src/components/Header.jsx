@@ -191,15 +191,6 @@ export function Header({ config }) {
         <div className="header__navSection">
           <nav className="header__navMobile" aria-label="Mobile quick links">
             <NavLink
-              to="/"
-              end
-              className={({ isActive }) =>
-                isActive ? 'header__mobileLink header__mobileLink--active' : 'header__mobileLink'
-              }
-            >
-              Home
-            </NavLink>
-            <NavLink
               to="/collections/all"
               className={({ isActive }) =>
                 isActive ? 'header__mobileLink header__mobileLink--active' : 'header__mobileLink'
@@ -207,6 +198,27 @@ export function Header({ config }) {
             >
               All products
             </NavLink>
+          </nav>
+          <nav className="header__mobileActions" aria-label="Mobile account actions">
+            {user ? (
+              <Link to="/cart" className="header__mobileActionBtn header__mobileActionBtn--cart">
+                <CartIcon />
+                <span className="header__cartCount">{count}</span>
+              </Link>
+            ) : (
+              <>
+                <Link to="/sign-in" className="header__mobileActionBtn header__mobileActionBtn--signIn">
+                  Sign in
+                </Link>
+                <Link to="/sign-up" className="header__mobileActionBtn header__mobileActionBtn--signUp">
+                  Sign up
+                </Link>
+                <Link to="/cart" className="header__mobileActionBtn header__mobileActionBtn--cart">
+                  <CartIcon />
+                  <span className="header__cartCount">{count}</span>
+                </Link>
+              </>
+            )}
           </nav>
 
           <nav className="header__nav" aria-label="Primary">

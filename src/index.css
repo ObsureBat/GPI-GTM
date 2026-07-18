@@ -426,6 +426,62 @@ img {
   color: var(--text);
 }
 
+.header__mobileActions {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.header__mobileActionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s var(--ease);
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.header__mobileActionBtn:hover {
+  background: rgba(15, 23, 42, 0.08);
+  color: var(--text);
+  border-color: rgba(15, 23, 42, 0.12);
+}
+
+.header__mobileActionBtn--signIn {
+  background: transparent;
+  border-color: transparent;
+}
+
+.header__mobileActionBtn--signUp {
+  background: linear-gradient(135deg, var(--gpi), var(--gtm));
+  color: white;
+  border-color: transparent;
+}
+
+.header__mobileActionBtn--signUp:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.header__mobileActionBtn--cart {
+  padding: 8px;
+  position: relative;
+}
+
+@media (max-width: 1023px) {
+  .header__mobileActions {
+    display: inline-flex;
+  }
+}
+
 @media (max-width: 1023px) {
   .header__navMobile {
     display: inline-flex;
@@ -2267,6 +2323,47 @@ img {
   font-family: var(--font-heading);
 }
 
+.product-card__actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 0.75rem 1rem 1rem;
+  border-top: 1px solid rgba(15, 23, 42, 0.06);
+  margin-top: auto;
+}
+
+.product-card__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+}
+
+.product-card__action:hover {
+  background: rgba(15, 23, 42, 0.08);
+  color: var(--text);
+  border-color: rgba(15, 23, 42, 0.12);
+  transform: translateY(-2px);
+}
+
+.product-card__action--liked {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border-color: transparent;
+}
+
+.product-card__action--liked:hover {
+  opacity: 0.9;
+}
+
 .btn--muted {
   background: rgba(15, 23, 42, 0.06);
   color: var(--text-muted);
@@ -3192,29 +3289,51 @@ img {
   border-radius: 12px;
   overflow: hidden;
   height: 48px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
 }
 
-.qty-selector button {
-  width: 40px;
+.qty-btn {
+  width: 44px;
   height: 100%;
   border: none;
-  background: transparent;
-  font-size: 1.25rem;
+  background: rgba(15, 23, 42, 0.03);
   cursor: pointer;
-  transition: background 0.2s var(--ease);
+  transition: all 0.2s var(--ease);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
 }
 
-.qty-selector button:hover {
-  background: var(--surface);
+.qty-btn:hover {
+  background: rgba(15, 23, 42, 0.08);
+  color: var(--text);
 }
 
-.qty-selector input {
-  width: 50px;
+.qty-btn:active {
+  transform: scale(0.95);
+}
+
+.qty-input {
+  width: 60px;
   border: none;
   text-align: center;
   font-weight: 700;
   font-size: 1rem;
   background: transparent;
+  color: var(--text);
+}
+
+.qty-input:focus {
+  outline: none;
+}
+
+.qty-value {
+  width: 40px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text);
 }
 
 .btn--add-to-cart {
@@ -3684,14 +3803,28 @@ img {
   gap: 0.5rem;
 }
 
-.cart-line__qty button {
-  width: 2rem;
-  height: 2rem;
-  border-radius: var(--radius);
-  border: 1px solid rgba(148, 163, 184, 0.4);
-  background: rgba(15, 23, 42, 0.9);
-  color: var(--text);
+.cart-line__qty .qty-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: rgba(15, 23, 42, 0.03);
+  color: var(--text-muted);
   cursor: pointer;
+  transition: all 0.2s var(--ease);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-line__qty .qty-btn:hover {
+  background: rgba(15, 23, 42, 0.08);
+  color: var(--text);
+  border-color: rgba(15, 23, 42, 0.15);
+}
+
+.cart-line__qty .qty-btn:active {
+  transform: scale(0.95);
 }
 
 .cart-summary {

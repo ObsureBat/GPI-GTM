@@ -40,18 +40,24 @@ export function CartPage() {
                 <div className="cart-line__qty">
                   <button
                     type="button"
+                    className="qty-btn qty-btn--decrease"
                     aria-label="Decrease"
                     onClick={() => updateQty(line.product_id, line.quantity - 1)}
                   >
-                    −
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
                   </button>
-                  <span>{line.quantity}</span>
+                  <span className="qty-value">{line.quantity}</span>
                   <button
                     type="button"
+                    className="qty-btn qty-btn--increase"
                     aria-label="Increase"
                     onClick={() => updateQty(line.product_id, line.quantity + 1)}
                   >
-                    +
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
                   </button>
                 </div>
                 <div className="cart-line__total">

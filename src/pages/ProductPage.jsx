@@ -269,15 +269,34 @@ export function ProductPage() {
           <div className="product-detail__buy">
             {!comingSoon && (
               <div className="qty-selector">
-                <button type="button" onClick={() => setQty(Math.max(1, qty - 1))}>-</button>
+                <button
+                  type="button"
+                  className="qty-btn qty-btn--decrease"
+                  onClick={() => setQty(Math.max(1, qty - 1))}
+                  aria-label="Decrease quantity"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  </svg>
+                </button>
                 <input
                   type="number"
                   min={1}
                   max={99}
                   value={qty}
                   onChange={(e) => setQty(Number(e.target.value) || 1)}
+                  className="qty-input"
                 />
-                <button type="button" onClick={() => setQty(Math.min(99, qty + 1))}>+</button>
+                <button
+                  type="button"
+                  className="qty-btn qty-btn--increase"
+                  onClick={() => setQty(Math.min(99, qty + 1))}
+                  aria-label="Increase quantity"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  </svg>
+                </button>
               </div>
             )}
             <button
