@@ -225,9 +225,6 @@ export function Header({ config }) {
                 <Link to="/sign-in" className="header__mobileActionBtn header__mobileActionBtn--icon" aria-label="Sign in">
                   <UserIcon />
                 </Link>
-                <Link to="/sign-up" className="header__mobileActionBtn header__mobileActionBtn--signUp">
-                  Sign up
-                </Link>
                 <Link to="/cart" className="header__mobileActionBtn header__mobileActionBtn--cart">
                   <CartIcon />
                   <span className="header__cartCount">{count}</span>
