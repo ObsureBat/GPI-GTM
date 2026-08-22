@@ -55,6 +55,22 @@ export function ProductPage() {
     api.getProducts().then(setAllProducts).catch(() => setAllProducts([]));
   }, [handle]);
 
+  useEffect(() => {
+    if (p && p !== false) {
+      const priceRupees = (p.price_cents / 100).toFixed(0);
+      document.title = `${p.title} – ₹${priceRupees} | Details & Buy Online | GPI Industries`;
+      let canonical = document.querySelector('link[rel="canonical"]');
+      if (!canonical) {
+        canonical = document.createElement('link');
+        canonical.setAttribute('rel', 'canonical');
+        document.head.appendChild(canonical);
+      }
+      canonical.setAttribute('href', `${window.location.origin}/products/${p.handle}`);
+    } else if (p === false) {
+      document.title = 'Product Not Found | GPI Industries';
+    }
+  }, [p]);
+
   const sizes = useMemo(() => {
     if (!p || !allProducts.length) return [];
     const baseTitle = p.title.replace(/\s\d+(g|kg|Kg).*$/i, '').trim();

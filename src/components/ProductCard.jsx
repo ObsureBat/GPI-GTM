@@ -83,7 +83,7 @@ export function ProductCard({ product, onAdd, className = '', style = {} }) {
       style={style}
     >
       <Link to={`/products/${product.handle}`} className="product-card__media">
-        <img src={mediaUrl(product.image_url)} alt="" loading="lazy" />
+        <img src={mediaUrl(product.image_url)} alt={product.title} loading="lazy" />
         <span className={tagClass}>{tag}</span>
       </Link>
       <div className="product-card__body">

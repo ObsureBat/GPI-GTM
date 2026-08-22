@@ -14,7 +14,19 @@ export function CollectionPage() {
     setData(null);
     api
       .getCollection(handle)
-      .then(setData)
+      .then((res) => {
+        setData(res);
+        if (res && res.title) {
+          document.title = `${res.title} – Buy Online | GPI Industries`;
+          let canonical = document.querySelector('link[rel="canonical"]');
+          if (!canonical) {
+            canonical = document.createElement('link');
+            canonical.setAttribute('rel', 'canonical');
+            document.head.appendChild(canonical);
+          }
+          canonical.setAttribute('href', `${window.location.origin}/collections/${handle}`);
+        }
+      })
       .catch(() => setErr(true));
   }, [handle]);
 

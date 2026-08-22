@@ -116,7 +116,7 @@ export function Home() {
                     <h3 className="journey-showcase__step-title">{journeySteps[activeStep].title}</h3>
                     <p className="journey-showcase__step-text">{journeySteps[activeStep].text}</p>
                     <div className="journey-showcase__step-media">
-                      <img src={journeySteps[activeStep].img} alt="" className="journey-showcase__step-img" />
+                      <img src={journeySteps[activeStep].img} alt={journeySteps[activeStep].title} className="journey-showcase__step-img" />
                     </div>
                   </div>
                 </div>

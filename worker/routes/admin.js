@@ -66,13 +66,28 @@ export async function handleAdmin(request, env, pathname) {
     return json(rows.results || []);
   }
 
+async function getUniqueHandle(env, rawHandleOrTitle, excludeId = null) {
+  let base = slugify(rawHandleOrTitle);
+  if (!base) base = 'product';
+  let candidate = base;
+  let count = 1;
+  while (true) {
+    const stmt = excludeId
+      ? env.DB.prepare('SELECT id FROM products WHERE handle = ? AND id != ?').bind(candidate, excludeId)
+      : env.DB.prepare('SELECT id FROM products WHERE handle = ?').bind(candidate);
+    const existing = await stmt.first();
+    if (!existing) return candidate;
+    candidate = `${base}-${count}`;
+    count++;
+  }
+}
+
   if (pathname === '/api/admin/products' && method === 'POST') {
     const body = await parseBody(request);
     if (!body?.title || body.price_cents == null) {
       return json({ error: 'title and price_cents are required' }, 400);
     }
-    const handle = (body.handle || slugify(body.title)).trim();
-    if (!handle) return json({ error: 'Invalid handle' }, 400);
+    const handle = await getUniqueHandle(env, body.handle || body.title);
 
     try {
       const result = await env.DB.prepare(

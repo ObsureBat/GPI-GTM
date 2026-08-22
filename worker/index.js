@@ -2,6 +2,9 @@ import { handleAuth } from './routes/auth.js';
 import { handleAdmin } from './routes/admin.js';
 import { handleStore } from './routes/store.js';
 import { json } from './auth/middleware.js';
+import { handleSeoPage } from './seo/seoHandler.js';
+import { handleSitemap } from './seo/sitemap.js';
+import { handleRobots } from './seo/robots.js';
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -56,8 +59,22 @@ async function handleApi(request, env) {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    const { pathname } = url;
 
-    if (url.pathname.startsWith('/api/')) {
+    if (pathname === '/sitemap.xml') {
+      try {
+        return await handleSitemap(request, env);
+      } catch (err) {
+        console.error('[sitemap]', err);
+        return new Response('Error generating sitemap', { status: 500 });
+      }
+    }
+
+    if (pathname === '/robots.txt') {
+      return handleRobots(request);
+    }
+
+    if (pathname.startsWith('/api/')) {
       try {
         return await handleApi(request, env);
       } catch (err) {
@@ -66,6 +83,16 @@ export default {
       }
     }
 
+    if (pathname.startsWith('/products/') || pathname.startsWith('/collections/')) {
+      try {
+        const seoResponse = await handleSeoPage(request, env, pathname);
+        if (seoResponse) return seoResponse;
+      } catch (err) {
+        console.error('[seo]', err);
+      }
+    }
+
     return env.ASSETS.fetch(request);
   },
 };
+
