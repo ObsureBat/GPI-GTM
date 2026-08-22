@@ -87,6 +87,8 @@ export function generateProductJsonLd(product, env, origin) {
       seller: {
         '@type': 'Organization',
         name: SITE_NAME,
+        url: origin,
+        logo: `${(env.CDN_URL || 'https://pub-9f2bb156112a4aadb011103c8f05ad76.r2.dev').replace(/\/$/, '')}/banners/gpi-logo.png`,
       },
     },
   };

@@ -84,6 +84,29 @@ export default {
       }
     }
 
+    if (
+      pathname === '/favicon.ico' ||
+      pathname === '/favicon.png' ||
+      pathname === '/apple-touch-icon.png' ||
+      pathname === '/apple-touch-icon-precomposed.png'
+    ) {
+      try {
+        const logoUrl = (env.CDN_URL || 'https://pub-9f2bb156112a4aadb011103c8f05ad76.r2.dev').replace(/\/$/, '') + '/banners/gpi-logo.png';
+        const logoRes = await fetch(logoUrl);
+        if (logoRes.ok) {
+          return new Response(logoRes.body, {
+            status: 200,
+            headers: {
+              'Content-Type': 'image/png',
+              'Cache-Control': 'public, max-age=86400, s-maxage=604800',
+            },
+          });
+        }
+      } catch (err) {
+        console.error('[favicon]', err);
+      }
+    }
+
     if (pathname === '/robots.txt') {
       return handleRobots(request);
     }

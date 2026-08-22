@@ -1,0 +1,19 @@
+{
+  "name": "GPI Industries Pvt. Ltd.",
+  "short_name": "GPI Store",
+  "icons": [
+    {
+      "src": "https://pub-9f2bb156112a4aadb011103c8f05ad76.r2.dev/banners/gpi-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://pub-9f2bb156112a4aadb011103c8f05ad76.r2.dev/banners/gpi-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display": "standalone"
+}
