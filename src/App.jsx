@@ -11,6 +11,7 @@ import { ProductPage } from './pages/ProductPage.jsx';
 import { CartPage } from './pages/CartPage.jsx';
 import { CheckoutPage } from './pages/CheckoutPage.jsx';
 import { NotFound } from './pages/NotFound.jsx';
+import AdminRoutes from './admin/AdminRoutes.jsx';
 import { ShippingPolicy } from './pages/ShippingPolicy.jsx';
 import { ReturnPolicy } from './pages/ReturnPolicy.jsx';
 import { PrivacyPolicy } from './pages/PrivacyPolicy.jsx';
