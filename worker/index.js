@@ -5,6 +5,7 @@ import { json } from './auth/middleware.js';
 import { handleSeoPage } from './seo/seoHandler.js';
 import { handleSitemap } from './seo/sitemap.js';
 import { handleRobots } from './seo/robots.js';
+import { handleMerchantFeed } from './seo/merchantFeed.js';
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -67,6 +68,19 @@ export default {
       } catch (err) {
         console.error('[sitemap]', err);
         return new Response('Error generating sitemap', { status: 500 });
+      }
+    }
+
+    if (
+      pathname === '/feed/google-shopping.xml' ||
+      pathname === '/feeds/google-shopping.xml' ||
+      pathname === '/google-shopping.xml'
+    ) {
+      try {
+        return await handleMerchantFeed(request, env);
+      } catch (err) {
+        console.error('[merchantFeed]', err);
+        return new Response('Error generating merchant feed', { status: 500 });
       }
     }
 

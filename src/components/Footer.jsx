@@ -35,6 +35,21 @@ export function Footer({ config }) {
             </Link>
           </div>
           <div className="footer__col reveal">
+            <h3 className="footer__heading">Policies</h3>
+            <Link className="footer__link" to="/shipping-policy">
+              Shipping Policy
+            </Link>
+            <Link className="footer__link" to="/return-policy">
+              Return &amp; Refund
+            </Link>
+            <Link className="footer__link" to="/privacy-policy">
+              Privacy Policy
+            </Link>
+            <Link className="footer__link" to="/terms">
+              Terms &amp; Conditions
+            </Link>
+          </div>
+          <div className="footer__col reveal">
             <h3 className="footer__heading">Contact</h3>
             <a className="footer__link" href={`mailto:${email}`}>
               {email}

@@ -11,7 +11,10 @@ import { ProductPage } from './pages/ProductPage.jsx';
 import { CartPage } from './pages/CartPage.jsx';
 import { CheckoutPage } from './pages/CheckoutPage.jsx';
 import { NotFound } from './pages/NotFound.jsx';
-import AdminRoutes from './admin/AdminRoutes.jsx';
+import { ShippingPolicy } from './pages/ShippingPolicy.jsx';
+import { ReturnPolicy } from './pages/ReturnPolicy.jsx';
+import { PrivacyPolicy } from './pages/PrivacyPolicy.jsx';
+import { TermsPage } from './pages/TermsPage.jsx';
 
 export default function App() {
   return (
@@ -34,6 +37,10 @@ export default function App() {
               <Route path="/collections/:handle" element={<CollectionPage />} />
               <Route path="/products/:handle" element={<ProductPage />} />
               <Route path="/cart" element={<CartPage />} />
+              <Route path="/shipping-policy" element={<ShippingPolicy />} />
+              <Route path="/return-policy" element={<ReturnPolicy />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsPage />} />
               <Route
                 path="/checkout"
                 element={

@@ -33,13 +33,25 @@ export function generateProductJsonLd(product, env, origin) {
   const brandName = product.brand === 'gtm' ? 'GTM' : 'GPI';
   const productUrl = `${origin}/products/${product.handle}`;
   const isAvailable = product.available === 1 && (product.stock_qty == null || product.stock_qty > 0);
+  const priceValidUntil = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+  const imageSchema = imageUrl
+    ? [
+        {
+          '@type': 'ImageObject',
+          url: imageUrl,
+          caption: product.title,
+        },
+        imageUrl,
+      ]
+    : [];
 
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product.title,
     description: product.description || `${product.title} from ${brandName}. High-quality product by ${SITE_NAME}.`,
-    image: imageUrl ? [imageUrl] : [],
+    image: imageSchema,
     sku: `SKU-${product.id}`,
     brand: {
       '@type': 'Brand',
@@ -50,8 +62,28 @@ export function generateProductJsonLd(product, env, origin) {
       url: productUrl,
       priceCurrency: 'INR',
       price: priceRupees,
+      priceValidUntil,
       availability: isAvailable ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       itemCondition: 'https://schema.org/NewCondition',
+      hasMerchantReturnPolicy: {
+        '@type': 'MerchantReturnPolicy',
+        applicableCountry: 'IN',
+        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+        merchantReturnDays: 7,
+        returnMethod: 'https://schema.org/ReturnByMail',
+      },
+      shippingDetails: {
+        '@type': 'OfferShippingDetails',
+        shippingRate: {
+          '@type': 'MonetaryAmount',
+          value: '0.00',
+          currency: 'INR',
+        },
+        shippingDestination: {
+          '@type': 'DefinedRegion',
+          addressCountry: 'IN',
+        },
+      },
       seller: {
         '@type': 'Organization',
         name: SITE_NAME,
